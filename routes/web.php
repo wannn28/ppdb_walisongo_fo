@@ -3,50 +3,56 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('homepage');
+    return view('informasi.homepage');
 })->name('homepage');
+
 Route::get('/home', function () {
-    return view('home');
+    return view('datasiswa.home');
 })->name('home');
 
 Route::get('/akun', function () {
-    return view('akun');
+    return view('datasiswa.akun');
 })->name('akun');
 
+Route::get('/data-siswa', function () {
+    return view('datasiswa.data-siswa');
+})->name('data-siswa');
+
 Route::get('/jadwal', function () {
-    return view('jadwal');
+    return view('informasi.jadwal');
 })->name('jadwal');
 
 Route::get('/berita', function () {
-    return view('berita');
+    return view('informasi.berita');
 })->name('berita');
 
 Route::get('/login', function () {
-    return view('login');
+    return view('auth.login');
 })->name('login');
 
 Route::get('/register', function () {
-    return view('register');
+    return view('auth.register');
 })->name('register');
 
 Route::get('/form-pendaftaran', function () {
-    return view('form-pendaftaran');
+    return view('datasiswa.form-pendaftaran');
 })->name('form-pendaftaran');
 
 Route::get('/unggah-berkas', function () {
-    return view('unggah-berkas');
+    return view('datasiswa.unggah-berkas');
 })->name('unggah-berkas');
 
 Route::get('/peringkat', function () {
-    return view('peringkat');
+    return view('datasiswa.peringkat');
 })->name('peringkat');
 
-Route::get('/data-siswa', [App\Http\Controllers\DataSiswaController::class, 'index'])->name('data-siswa');  
+
+Route::get('/pesan', function () {
+    return view('komunikasi.pesan');
+})->name('pesan');
 
 Route::get('/riwayat', [App\Http\Controllers\RiwayatController::class, 'index'])->name('riwayat');
 
-Route::get('/pesan',  [App\Http\Controllers\GeneralController::class, 'pesan'])->name('pesan'); 
-
 Route::get('/pengajuan-biaya', function () {
-    return view('pengajuan-biaya');
-})->name('pengajuan-biaya');  
+    return view('transaksi.pengajuan-biaya');
+})->name('pengajuan-biaya');

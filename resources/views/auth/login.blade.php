@@ -31,8 +31,11 @@
 
             const response = await AwaitFetchApi('auth/login', 'POST', { no_telp },true);
             if (response && response.meta?.code === 200) {
-                localStorage.setItem('token', response.data.token);// notifikasi tersimpan
-                window.location.href = '/home';
+                if (response.data.token && response.data.token !== '') {
+                    showNotification("Login Berhasil!", "success");         
+                    localStorage.setItem('token', response.data.token);// notifikasi tersimpan
+                    window.location.href = '/home';
+                }
             
             }
         });

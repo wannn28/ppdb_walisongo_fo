@@ -35,8 +35,21 @@ function generateQRCode(elementId, data, options = {}) {
     ctx.drawImage(qr.canvas, 0, 0);
 }
 
-// Fungsi untuk menampilkan modal QRIS
+
+// Fungsi untuk menutup modal
+function closeModal() {
+    const modal = document.getElementById('qrisModal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Fungsi untuk cek status pembayaran
+let qrData = '';
+
 function showQRModal(data) {
+    print.log(data);
+    qrData = data; // Simpan qr_data untuk digunakan saat cek status
     // Buat elemen modal
     const modal = document.createElement('div');
     modal.id = 'qrisModal';
@@ -82,28 +95,25 @@ function showQRModal(data) {
     generateQRCode('qrCanvas', data);
 }
 
-// Fungsi untuk menutup modal
-function closeModal() {
-    const modal = document.getElementById('qrisModal');
-    if (modal) {
-        modal.remove();
-    }
-}
-
-// Fungsi untuk cek status pembayaran
 async function checkPaymentStatus() {
     try {
-        const response = await fetch('/api/payment/status');
-        const result = await response.json();
+        if (!qrData) {
+            showNotification('Data QR tidak valid', 'error');
+            return;
+        }
 
-        if (result.status === 'paid') {
-            alert('Pembayaran berhasil!');
-            closeModal();
+        const result = await AwaitFetchApi('check-status', 'POST', { qr_data: qrData }, true);
+
+        if (result.meta?.code === 200) {
+            showNotification(result.meta.message || 'Pembayaran berhasil!', 'success');
+            // closeModal();
+            // Refresh halaman atau redirect sesuai kebutuhan
+            // window.location.reload();
         } else {
-            alert('Pembayaran belum diterima');
+            showNotification(result.meta?.message || 'Pembayaran belum diterima', 'warning');
         }
     } catch (error) {
-        print.error('Error:', error);
-        alert('Gagal memeriksa status pembayaran');
+        console.error('Error:', error);
+        showNotification('Gagal memeriksa status pembayaran: ' + (error.message || 'Terjadi kesalahan'), 'error');
     }
 }

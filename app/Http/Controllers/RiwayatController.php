@@ -36,6 +36,6 @@ class RiwayatController extends Controller
                 ]
             ]
         ];
-        return view('riwayat', compact('transactions'));
+        return view('transaksi.riwayat', compact('transactions'));
     }
 }

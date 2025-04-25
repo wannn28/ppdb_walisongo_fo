@@ -23,7 +23,7 @@
 @endsection
 
 <body class="max-w-sm mx-auto relative min-h-screen">
-    @yield('header')
+    {{-- @yield('header') --}}
     @yield('started')
 
     @stack('scripts')

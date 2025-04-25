@@ -20,6 +20,6 @@ class GeneralController extends Controller
             'deskripsi' => 'Pembayaran Uang Pendaftaran Bulan Maret'
            ]
         ];
-        return view('pesan', compact('datapesan'));
+        return view('komunikasi.pesan', compact('datapesan'));
     }
 }

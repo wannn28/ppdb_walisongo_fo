@@ -28,19 +28,20 @@
                                 <span class="font-medium">${pesan.deskripsi}</span>
                             </div>
                             ${pesan.is_read === 0 ? `
-                            <div class="flex flex-col justify-center min-w-4 max-w-4">
-                                <img src="{{ asset('assets/svg/notif-message.svg') }}" alt="icon">
-                            </div>
+                                <div class="flex items-center">
+                                    <div class="w-2 h-2 bg-red-500 rounded-full"></div>
+                                </div>
                             ` : ''}
                         </div>
                     `;
                     container.insertAdjacentHTML('beforeend', pesanHTML);
                 });
             } else {
-                container.innerHTML = `<div class="text-center text-gray-500 text-sm">Tidak ada pesan.</div>`;
+                container.innerHTML = '<div class="text-center py-4">Tidak ada pesan</div>';
             }
         }).catch(error => {
-            print.error("Gagal mengambil pesan:", error);
+            console.error('Error fetching messages:', error);
+            document.getElementById('container-pesan').innerHTML = '<div class="text-center py-4 text-red-500">Gagal memuat pesan</div>';
         });
     });
 </script>

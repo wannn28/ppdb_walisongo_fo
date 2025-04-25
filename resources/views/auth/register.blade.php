@@ -40,6 +40,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // showQRModal('https://payment-link.com');
             const daftarBtn = document.getElementById('btn-daftar');
             // Tampilkan modal QRIS
             daftarBtn.addEventListener('click', async () => {
@@ -61,8 +62,8 @@
                     jenjang_sekolah
                 };
 
+               
                 const response = await AwaitFetchApi('auth/register', 'POST', data, true);
-                 // showQRModal('https://payment-link.com');
                  if (response.meta?.code === 201) {
                     showNotification("Registrasi berhasil!, Silahkan lakukan pembayaran", "success");
                     showQRModal(response.data.qr_data);  // Tampilkan modal QR
