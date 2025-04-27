@@ -4,7 +4,7 @@
     <div class="text-2xl flex w-full justify-center text-[#048FBD] font-bold">Login</div>
     <div class="text-xs">
         Nomor HP
-        <input id="phoneInput" type="number" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none">
+        <input id="phoneInput" type="tel" pattern="[0-9]*" inputmode="numeric" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
     </div>
     <button id="loginBtn" class="w-full h-10 bg-[#51C2FF] rounded-lg text-white cursor-pointer">Login</button>
     <div class="flex text-xs justify-center">
@@ -21,6 +21,27 @@
         // Kosongkan token saat membuka halaman login
         localStorage.setItem('token', '');
 
+        // Additional input validation
+        phoneInput.addEventListener('keypress', function(e) {
+            // Allow only number keys (0-9)
+            const charCode = e.which ? e.which : e.keyCode;
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Also validate on paste events
+        phoneInput.addEventListener('paste', function(e) {
+            // Get pasted data
+            let pastedData = (e.clipboardData || window.clipboardData).getData('text');
+            if (!/^\d+$/.test(pastedData)) {
+                // If pasted data contains non-numeric characters, prevent the paste
+                e.preventDefault();
+                return false;
+            }
+        });
+
         loginBtn.addEventListener('click', async () => {
             const no_telp = phoneInput.value;
 
@@ -29,14 +50,13 @@
                 return;
             }
 
-            const response = await AwaitFetchApi('auth/login', 'POST', { no_telp },true);
+            const response = await buttonAPI('auth/login', 'POST', { no_telp }, true, loginBtn, 'Masuk...');
             if (response && response.meta?.code === 200) {
                 if (response.data.token && response.data.token !== '') {
                     showNotification("Login Berhasil!", "success");         
                     localStorage.setItem('token', response.data.token);// notifikasi tersimpan
                     window.location.href = '/home';
                 }
-            
             }
         });
     });

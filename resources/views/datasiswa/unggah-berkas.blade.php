@@ -67,17 +67,17 @@
             });
 
             if (!hasFile) {
-                showNotification("Silakan pilih minimal satu file untuk diunggah.", "error");
+                showAlert("Silakan pilih minimal satu file untuk diunggah.", "error");
                 return;
             }
 
             const response = await AwaitFetchApi('user/berkas/upload', 'POST', formData);
 
             if (response.meta?.code === 200) {
-                showNotification("Berkas berhasil diunggah!", "success");
+                showAlert("Berkas berhasil diunggah!", "success");
                 location.reload();
             } else {
-                showNotification(response.meta?.message || "Gagal mengunggah: Terjadi kesalahan.", "error");
+                showAlert(response.meta?.message || "Gagal mengunggah: Terjadi kesalahan.", "error");
             }
         });
     </script>

@@ -34,10 +34,16 @@
         </div>
     </div>
 
+    <!-- Notifikasi Form -->
+    <div id="form-notification" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-2 mb-4 text-xs rounded" role="alert">
+        <p class="font-bold">Perhatian!</p>
+        <p>Silahkan isi form pendaftaran terlebih dahulu.</p>
+    </div>
+
     <!-- Konten lainnya tetap sama -->
     <div class="flex w-full max-w-sm justify-center">
         <div class="grid grid-cols-4 py-4 gap-8">
-            <a href="{{ route('data-siswa') }}"
+            <a id="data-siswa-link" href="#" 
                 class="text-center @if (request()->routeIs('data-siswa')) text-ppdb-green @else text-gray-500 @endif">
                 <div class="flex flex-col items-center">
                     <img src="{{ asset('assets/svg/Icon Data Siswa.svg') }}" alt="data siswa">
@@ -90,11 +96,11 @@
     <a href="{{ route('unggah-berkas') }}" id="link-unggah">
         <div class="text-xs font-semibold">
             <div class="pb-4" id="text-link-utama">Unggah Berkas</div>
-            <div class="w-full bg-[#0267B2] p-2 rounded-lg min-h-12 flex">
+            <div class="w-full bg-[#0267B2] p-2 rounded-lg h-16 flex">
                 <img id="img-link" src="{{ asset('assets/svg/Upload To FTP.svg') }}" alt="">
                 <div class="flex flex-col justify-center pl-2 text-white">
                     <span id="text-link-1">Unggah Berkas</span>
-                    <span id="text-link-2" class="text-[10px] font-light">Upload Dokumen Pendukung</span>
+                    <span id="text-link-2" class="text-[10px]">Upload Dokumen Pendukung</span>
                 </div>
             </div>
         </div>
@@ -131,8 +137,16 @@
                         document.getElementById('jenjang_sekolah').innerText =
                             `${peserta.jenjang_sekolah} WALISONGO SEMARANG`;
 
-                        // Update progress bar/icon
+                        // Cek progressUser
+                        const dataSiswaLink = document.getElementById('data-siswa-link');
+                        const formNotification = document.getElementById('form-notification');
+                        
                         if (res.data.progressUser) {
+                            // Jika sudah ada progress, aktifkan link data siswa
+                            dataSiswaLink.href = "{{ route('data-siswa') }}";
+                            dataSiswaLink.classList.remove('cursor-not-allowed', 'opacity-50');
+                            formNotification.classList.add('hidden');
+                            
                             const progress = res.data.progressUser.progress;
 
                             // Logika penentuan tampilan progress bar
@@ -166,6 +180,17 @@
 
                             }
                         } else {
+                            // Jika progressUser null, nonaktifkan link data siswa dan tampilkan notifikasi
+                            dataSiswaLink.href = "#";
+                            dataSiswaLink.classList.add('cursor-not-allowed', 'opacity-50');
+                            formNotification.classList.remove('hidden');
+                            
+                            // Tambahkan event listener untuk menampilkan pesan saat diklik
+                            dataSiswaLink.addEventListener('click', function(e) {
+                                e.preventDefault();
+                                showAlert('Silahkan isi form pendaftaran terlebih dahulu.', 'error');
+                            });
+                            
                             // Jika progress == null
                             document.getElementById('img-isi-form').src = nowProgress1;
                             document.getElementById('img-unggah-berkas').src = beforeProgressIcon2;

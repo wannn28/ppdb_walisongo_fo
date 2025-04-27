@@ -188,7 +188,7 @@
                     saveBtn.className = 'bg-blue-600 text-white text-xs px-2 py-1 rounded';
                     saveBtn.addEventListener('click', async () => {
                         const file = input.files[0];
-                        if (!file) return showNotification(
+                        if (!file) return showAlert(
                             'Pilih file terlebih dahulu.', 'error');
                         const formData = new FormData();
                         formData.append('file', file);
@@ -197,7 +197,7 @@
                         const res = await AwaitFetchApi(`user/berkas/${id}`, 'POST',
                             formData);
                         res.meta?.code === 200 ? location.reload() :
-                            showNotification('Gagal memperbarui berkas.', 'error');
+                            showAlert('Gagal memperbarui berkas.', 'error');
                     });
 
                     parent.appendChild(input);

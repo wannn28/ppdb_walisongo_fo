@@ -24,19 +24,17 @@
         </div>
         <div class="text-xs grid grid-cols-2 gap-4">
             <div>
-                Jurusan 1
+                Kelas 1
                 <select id="jurusan1" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight">
-                    <option value="1">IPA</option>
-                    <option value="2">IPS</option>
+                    <option value="">Pilih Kelas</option>
                 </select>
             </div>
-            <div>
-                Jurusan 2
+            {{-- <div>
+                Kelas 2
                 <select id="jurusan2" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight">
-                    <option value="2">IPS</option>
-                    <option value="1">IPA</option>
+                    <option value="">Pilih Jurusan</option>
                 </select>
-            </div>
+            </div> --}}
         </div>
         <div class="text-xs">
             Alamat
@@ -65,16 +63,16 @@
                 placeholder="Masukkan No Telp Orang Tua">
         </div>
         <div class="text-xs">
-            Pekerjaan Ayah (ID)
-            <input id="pekerjaan_ayah_id" type="number"
-                class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight"
-                placeholder="ID Pekerjaan Ayah">
+            Pekerjaan Ayah
+            <select id="pekerjaan_ayah_id" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight">
+                <option value="">Pilih Pekerjaan Ayah</option>
+            </select>
         </div>
         <div class="text-xs">
-            Pekerjaan Ibu (ID)
-            <input id="pekerjaan_ibu_id" type="number"
-                class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight"
-                placeholder="ID Pekerjaan Ibu">
+            Pekerjaan Ibu
+            <select id="pekerjaan_ibu_id" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight">
+                <option value="">Pilih Pekerjaan Ibu</option>
+            </select>
         </div>
         <div class="text-xs">
             Penghasilan Ortu (ID)
@@ -88,13 +86,73 @@
     </form>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             const form = document.getElementById('form-pendaftaran');
+            
+            // Fetch jurusan data
+            try {
+                const jurusanRes = await AwaitFetchApi('jurusan', 'GET', null);
+                if (jurusanRes.meta?.code === 200) {
+                    const jurusan1Select = document.getElementById('jurusan1');
+                    const jurusan2Select = document.getElementById('jurusan2');
+                    
+                    // Clear existing options except the first one
+                    jurusan1Select.innerHTML = '<option value="">Pilih Jurusan</option>';
+                    jurusan2Select.innerHTML = '<option value="">Pilih Jurusan</option>';
+                    
+                    // Handle both possible response structures
+                    const jurusanData = Array.isArray(jurusanRes.data?.data) ? jurusanRes.data.data : 
+                                        Array.isArray(jurusanRes.data) ? jurusanRes.data : [];
+                    
+                    // Add options from API
+                    jurusanData.forEach(item => {
+                        const option1 = document.createElement('option');
+                        option1.value = item.id;
+                        option1.textContent = `${item.jurusan} (${item.jenjang_sekolah})`;
+                        jurusan1Select.appendChild(option1);
+                        
+                        const option2 = document.createElement('option');
+                        option2.value = item.id;
+                        option2.textContent = `${item.jurusan} (${item.jenjang_sekolah})`;
+                        jurusan2Select.appendChild(option2);
+                    });
+                }
+            } catch (error) {
+                print.error('Error fetching jurusan:', error);
+            }
+            
+            // Fetch pekerjaan ortu data
+            try {
+                const pekerjaanRes = await AwaitFetchApi('pekerjaan-ortu', 'GET', null);
+                if (pekerjaanRes.meta?.code === 200 && Array.isArray(pekerjaanRes.data?.data)) {
+                    const pekerjaanAyahSelect = document.getElementById('pekerjaan_ayah_id');
+                    const pekerjaanIbuSelect = document.getElementById('pekerjaan_ibu_id');
+                    
+                    // Clear existing options except the first one
+                    pekerjaanAyahSelect.innerHTML = '<option value="">Pilih Pekerjaan Ayah</option>';
+                    pekerjaanIbuSelect.innerHTML = '<option value="">Pilih Pekerjaan Ibu</option>';
+                    
+                    // Add options from API
+                    pekerjaanRes.data.data.forEach(item => {
+                        const optionAyah = document.createElement('option');
+                        optionAyah.value = item.id;
+                        optionAyah.textContent = item.nama_pekerjaan;
+                        pekerjaanAyahSelect.appendChild(optionAyah);
+                        
+                        const optionIbu = document.createElement('option');
+                        optionIbu.value = item.id;
+                        optionIbu.textContent = item.nama_pekerjaan;
+                        pekerjaanIbuSelect.appendChild(optionIbu);
+                    });
+                }
+            } catch (error) {
+                print.error('Error fetching pekerjaan ortu:', error);
+            }
 
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
-
-                const token = localStorage.getItem('token');
+                
+                const submitBtn = document.querySelector('button[type="submit"]');
 
                 const payload = {
                     nisn: document.getElementById('nisn').value,
@@ -116,16 +174,16 @@
                 };
 
                 try {
-                    const responseForm = await AwaitFetchApi('user/peserta/form-peserta', 'PUT',
-                        payload);
+                    const responseForm = await buttonAPI('user/peserta/form-peserta', 'PUT',
+                        payload, false, submitBtn, 'Menyimpan data siswa...');
                     if (responseForm.errors) {
-                        showNotification("Gagal menyimpan data siswa", "error");
+                     //   showNotification("Gagal menyimpan data siswa", "error");
                         return;
                     }
 
-                    const responseOrtu = await AwaitFetchApi('user/biodata-ortu', 'POST', payloadOrtu);
+                    const responseOrtu = await buttonAPI('user/biodata-ortu', 'POST', payloadOrtu, false, submitBtn, 'Menyimpan data orang tua...');
                     if (responseOrtu.errors) {
-                        showNotification("Gagal menyimpan data orang tua", "error");
+                    //    showNotification("Gagal menyimpan data orang tua", "error");
                         return;
                     }
 
