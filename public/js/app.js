@@ -130,7 +130,10 @@ async function AwaitFetchApi(url, method, data, skipAuth = false) {
         
         // Tambahkan kondisi pengecekan method
         if (['POST', 'PUT'].includes(method) && result.meta?.message) {
-            showNotification(result.meta.message, response.ok ? 'info' : 'error');
+            if (response.ok) {
+                
+                showNotification(result.meta.message, 'info' );
+            }
         }
 
         if (!response.ok) {

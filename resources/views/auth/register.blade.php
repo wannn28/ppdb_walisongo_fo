@@ -112,9 +112,6 @@
                     } else if (response.meta?.code === 200) {
                         // Handling for 200 status but with error message
                         showNotification(response.meta.message || "Registrasi gagal", "warning");
-                    } else {
-                        // General error
-                        showNotification(response.meta?.message || "Terjadi kesalahan saat registrasi", "error");
                     }
                 } catch (error) {
                     console.error("Register error:", error);

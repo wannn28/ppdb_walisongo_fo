@@ -67,17 +67,17 @@
             });
 
             if (!hasFile) {
-                showAlert("Silakan pilih minimal satu file untuk diunggah.", "error");
+                showNotification("Silakan pilih minimal satu file untuk diunggah.", "error");
                 return;
             }
 
-            const response = await AwaitFetchApi('user/berkas/upload', 'POST', formData);
+            const response = await buttonAPI('user/berkas/upload', 'POST', formData, false, submitBtn, 'Menyimpan data siswa...');
 
             if (response.meta?.code === 200) {
-                showAlert("Berkas berhasil diunggah!", "success");
+                showNotification("Berkas berhasil diunggah!", "success");
                 location.reload();
             } else {
-                showAlert(response.meta?.message || "Gagal mengunggah: Terjadi kesalahan.", "error");
+                showNotification(response.meta?.message || "Gagal mengunggah: Terjadi kesalahan.", "error");
             }
         });
     </script>

@@ -98,22 +98,22 @@ function showQRModal(data) {
 async function checkPaymentStatus() {
     try {
         if (!qrData) {
-            showAlert('Data QR tidak valid', 'error');
+            showNotification('Data QR tidak valid', 'error');
             return;
         }
 
         const result = await AwaitFetchApi('check-status', 'POST', { qr_data: qrData }, true);
 
         if (result.meta?.code === 200) {
-            showAlert(result.meta.message || 'Pembayaran berhasil!', 'success');
+            showNotification(result.meta.message || 'Pembayaran berhasil!', 'success');
             // closeModal();
             // Refresh halaman atau redirect sesuai kebutuhan
             // window.location.reload();
         } else {
-            showAlert(result.meta?.message || 'Pembayaran belum diterima', 'warning');
+            showNotification(result.meta?.message || 'Pembayaran belum diterima', 'warning');
         }
     } catch (error) {
         console.error('Error:', error);
-        showAlert('Gagal memeriksa status pembayaran: ' + (error.message || 'Terjadi kesalahan'), 'error');
+        showNotification('Gagal memeriksa status pembayaran: ' + (error.message || 'Terjadi kesalahan'), 'error');
     }
 }

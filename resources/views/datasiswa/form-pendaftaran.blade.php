@@ -94,11 +94,9 @@
                 const jurusanRes = await AwaitFetchApi('jurusan', 'GET', null);
                 if (jurusanRes.meta?.code === 200) {
                     const jurusan1Select = document.getElementById('jurusan1');
-                    const jurusan2Select = document.getElementById('jurusan2');
                     
                     // Clear existing options except the first one
                     jurusan1Select.innerHTML = '<option value="">Pilih Jurusan</option>';
-                    jurusan2Select.innerHTML = '<option value="">Pilih Jurusan</option>';
                     
                     // Handle both possible response structures
                     const jurusanData = Array.isArray(jurusanRes.data?.data) ? jurusanRes.data.data : 
@@ -110,11 +108,6 @@
                         option1.value = item.id;
                         option1.textContent = `${item.jurusan} (${item.jenjang_sekolah})`;
                         jurusan1Select.appendChild(option1);
-                        
-                        const option2 = document.createElement('option');
-                        option2.value = item.id;
-                        option2.textContent = `${item.jurusan} (${item.jenjang_sekolah})`;
-                        jurusan2Select.appendChild(option2);
                     });
                 }
             } catch (error) {
@@ -159,8 +152,7 @@
                     tempat_lahir: document.getElementById('tempat_lahir').value,
                     tanggal_lahir: document.getElementById('tanggal_lahir').value,
                     alamat: document.getElementById('alamat').value,
-                    jurusan1_id: parseInt(document.getElementById('jurusan1').value),
-                    jurusan2_id: parseInt(document.getElementById('jurusan2').value)
+                    jurusan1_id: parseInt(document.getElementById('jurusan1').value)
                 };
 
                 const payloadOrtu = {
