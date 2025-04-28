@@ -96,7 +96,7 @@
                     const jurusan1Select = document.getElementById('jurusan1');
                     
                     // Clear existing options except the first one
-                    jurusan1Select.innerHTML = '<option value="">Pilih Jurusan</option>';
+                    jurusan1Select.innerHTML = '<option value="">Pilih Kelas</option>';
                     
                     // Handle both possible response structures
                     const jurusanData = Array.isArray(jurusanRes.data?.data) ? jurusanRes.data.data : 
@@ -117,7 +117,9 @@
             // Fetch pekerjaan ortu data
             try {
                 const pekerjaanRes = await AwaitFetchApi('pekerjaan-ortu', 'GET', null);
-                if (pekerjaanRes.meta?.code === 200 && Array.isArray(pekerjaanRes.data?.data)) {
+                // print.log("Pekerjaan response:", pekerjaanRes);
+                
+                if (pekerjaanRes.meta?.code === 200) {
                     const pekerjaanAyahSelect = document.getElementById('pekerjaan_ayah_id');
                     const pekerjaanIbuSelect = document.getElementById('pekerjaan_ibu_id');
                     
@@ -125,8 +127,18 @@
                     pekerjaanAyahSelect.innerHTML = '<option value="">Pilih Pekerjaan Ayah</option>';
                     pekerjaanIbuSelect.innerHTML = '<option value="">Pilih Pekerjaan Ibu</option>';
                     
+                    // Get the data array from the correct location
+                    let pekerjaanData = [];
+                    if (Array.isArray(pekerjaanRes.data)) {
+                        // Direct array in data
+                        pekerjaanData = pekerjaanRes.data;
+                    } else if (Array.isArray(pekerjaanRes.data?.data)) {
+                        // Nested array in data.data
+                        pekerjaanData = pekerjaanRes.data.data;
+                    }
+                    
                     // Add options from API
-                    pekerjaanRes.data.data.forEach(item => {
+                    pekerjaanData.forEach(item => {
                         const optionAyah = document.createElement('option');
                         optionAyah.value = item.id;
                         optionAyah.textContent = item.nama_pekerjaan;
