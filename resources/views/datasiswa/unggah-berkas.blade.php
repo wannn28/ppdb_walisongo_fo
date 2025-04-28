@@ -53,7 +53,7 @@
         });
         document.getElementById('uploadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
+            const submitBtn = document.querySelector('button[type="submit"]');
             const formData = new FormData();
             const fileInputs = document.querySelectorAll('input[type="file"]');
             let hasFile = false;
