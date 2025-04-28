@@ -62,6 +62,8 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
+    'wa_contact' => env('WA_CONTACT', '628xxxxxxxxx'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

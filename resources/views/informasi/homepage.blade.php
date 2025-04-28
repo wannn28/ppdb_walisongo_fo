@@ -5,14 +5,30 @@
         <!-- Gambar-gambar akan ditampilkan di sini -->
     </div>
 
-    <div class="w-full flex justify-center">
-        <button id="loginBtn" class="w-48 h-12 bg-gradient-to-r from-[#51C2FF] to-[#1E88E5] rounded-lg text-white font-bold cursor-pointer shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center justify-center fixed bottom-8">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V3zm1 4h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8a1 1 0 011-1zm0 4h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2a1 1 0 011-1z" clip-rule="evenodd" />
-            </svg>
-            Join Sekarang
-        </button>
-    </div>
+    {{-- <div class="fixed bottom-0 left-0 w-full flex justify-center z-50">
+        <div class="relative w-full max-w-md bg-white rounded-t-2xl shadow-lg flex items-center justify-between px-12 py-3">
+            <!-- Left Button: Join Sekarang (Font Awesome User Plus Icon) -->
+            <button id="loginBtn" class="flex flex-col items-center text-gray-500 hover:text-[#1E88E5] focus:outline-none">
+                <i class="fas fa-user-plus fa-lg mb-1"></i>
+                <span class="text-xs">Join Sekarang</span>
+            </button>
+            <!-- Cekungan SVG -->
+            <div class="absolute left-1/2 -translate-x-1/2 -top-7 z-0 pointer-events-none" style="width: 80px; height: 40px;">
+                <svg width="80" height="40" viewBox="0 0 80 40" fill="none">
+                    <path d="M0,40 Q40,0 80,40" fill="white"/>
+                </svg>
+            </div>
+            <!-- Center Floating Button: Home Icon (Font Awesome) -->
+            <button class="absolute left-1/2 -translate-x-1/2 -top-10 bg-[#51C2FF] hover:bg-[#1E88E5] text-white rounded-full w-20 h-20 flex items-center justify-center shadow-lg border-4 border-white focus:outline-none z-10">
+                <i class="fas fa-home fa-2x"></i>
+            </button>
+            <!-- Right Button: Hubungi Kami (Font Awesome WhatsApp Icon) -->
+            <button class="flex flex-col items-center text-gray-500 hover:text-[#1E88E5] focus:outline-none">
+                <i class="fab fa-whatsapp fa-lg mb-1"></i>
+                <span class="text-xs">Hubungi Kami</span>
+            </button>
+        </div>
+    </div> --}}
 
     <script>
 
@@ -38,11 +54,6 @@
                 img.className = "w-full";
                 container.appendChild(img);
             });
-        });
-
-        const loginBtn = document.getElementById('loginBtn');
-        loginBtn.addEventListener('click', () => {
-            window.location.href = '/login';
         });
     </script>
 @endsection
