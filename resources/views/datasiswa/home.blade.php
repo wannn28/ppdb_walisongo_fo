@@ -59,8 +59,9 @@
                     <img src="{{ asset('assets/svg/Icon Riwayat.svg') }}" alt="Berita">
                 </div>
             </a>
-            <a href="{{ route('pesan') }}" class="text-center">
+            <a href="{{ route('pesan') }}" class="text-center relative">
                 <div class="flex flex-col items-center">
+                    <span id="navbar-unread-count" class="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold z-10"></span>
                     <img src="{{ asset('assets/svg/Icon Pesan.svg') }}" alt="Account">
                 </div>
             </a>
@@ -164,6 +165,21 @@
                             `Jenis Kelamin : ${peserta.jenis_kelamin}`;
                         document.getElementById('jenjang_sekolah').innerText =
                             `${peserta.jenjang_sekolah} WALISONGO SEMARANG`;
+                        
+                        // Update badge jumlah pesan di navbar bawah
+                        if (res.data.pesan) {
+                            const unreadCount = res.data.pesan;
+                            const navbarBadge = document.getElementById('navbar-unread-count');
+                            
+                            if (navbarBadge) {
+                                if (unreadCount > 0) {
+                                    navbarBadge.textContent = unreadCount;
+                                    navbarBadge.classList.remove('hidden');
+                                } else {
+                                    navbarBadge.classList.add('hidden');
+                                }
+                            }
+                        }
 
                         // Cek progressUser
                         const dataSiswaLink = document.getElementById('data-siswa-link');

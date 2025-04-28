@@ -19,7 +19,7 @@
             const container = document.getElementById('riwayat-container');
             
             try {
-                const response = await AwaitFetchApi('user/transaksi/riwayat', 'GET', null);
+                const response = await AwaitFetchApi('user/riwayat', 'GET', null);
                 
                 if (response.meta?.code === 200 && response.data) {
                     // Grouping transaksi by date

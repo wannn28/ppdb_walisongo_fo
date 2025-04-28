@@ -76,9 +76,9 @@
         </div>
         <div class="text-xs">
             Penghasilan Ortu (ID)
-            <input id="penghasilan_ortu_id" type="number"
-                class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight"
-                placeholder="ID Penghasilan Orang Tua">
+            <select id="penghasilan_ortu_id" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight">
+                <option value="">Pilih Penghasilan Orang Tua</option>
+            </select>
         </div>
 
 
@@ -153,6 +153,38 @@
             } catch (error) {
                 print.error('Error fetching pekerjaan ortu:', error);
             }
+            
+            // Fetch penghasilan ortu data
+            try {
+                const penghasilanRes = await AwaitFetchApi('user/penghasilan-ortu', 'GET', null);
+                
+                if (penghasilanRes.meta?.code === 200) {
+                    const penghasilanSelect = document.getElementById('penghasilan_ortu_id');
+                    
+                    // Clear existing options except the first one
+                    penghasilanSelect.innerHTML = '<option value="">Pilih Penghasilan Orang Tua</option>';
+                    
+                    // Get the data array from the correct location
+                    let penghasilanData = [];
+                    if (Array.isArray(penghasilanRes.data)) {
+                        // Direct array in data
+                        penghasilanData = penghasilanRes.data;
+                    } else if (Array.isArray(penghasilanRes.data?.data)) {
+                        // Nested array in data.data
+                        penghasilanData = penghasilanRes.data.data;
+                    }
+                    
+                    // Add options from API
+                    penghasilanData.forEach((item, index) => {
+                        const option = document.createElement('option');
+                        option.value = index + 1;
+                        option.textContent = item.penghasilan_ortu;
+                        penghasilanSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                print.error('Error fetching penghasilan ortu:', error);
+            }
 
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
@@ -173,8 +205,7 @@
                     no_telp: document.getElementById('no_telp').value,
                     pekerjaan_ayah_id: parseInt(document.getElementById('pekerjaan_ayah_id').value),
                     pekerjaan_ibu_id: parseInt(document.getElementById('pekerjaan_ibu_id').value),
-                    penghasilan_ortu_id: parseInt(document.getElementById('penghasilan_ortu_id')
-                        .value)
+                    penghasilan_ortu_id: parseInt(document.getElementById('penghasilan_ortu_id').value)
                 };
 
                 try {

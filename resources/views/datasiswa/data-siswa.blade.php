@@ -70,55 +70,88 @@
     </div>
 
     <!-- Form Edit -->
-    <div id="edit-form" class="hidden space-y-4">
-        <div class="font-medium">Edit Data Siswa</div>
+    <div id="edit-form" class="hidden space-y-4 bg-white rounded-lg p-6 shadow-md">
+        <div class="font-medium text-xl text-[#0267B2] mb-4">Edit Data Siswa</div>
 
-        <div class="flex flex-col">
-            <label for="edit-nisn">NISN</label>
-            <input id="edit-nisn" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-nama">Nama</label>
-            <input id="edit-nama" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-tempat-lahir">Tempat Lahir</label>
-            <input id="edit-tempat-lahir" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-tanggal-lahir">Tanggal Lahir</label>
-            <input id="edit-tanggal-lahir" type="date" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-no-telp">No Telepon</label>
-            <input id="edit-no-telp" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-jenis_kelamin">Jenis Kelamin</label>
-            <input id="edit-jenis_kelamin" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-jenjang">Jenjang</label>
-            <input id="edit-jenjang" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-nama-ayah">Nama Ayah</label>
-            <input id="edit-nama-ayah" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-nama-ibu">Nama Ibu</label>
-            <input id="edit-nama-ibu" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-penghasilan-ayah">Penghasilan Ayah</label>
-            <input id="edit-penghasilan-ayah" type="text" class="border rounded p-1 text-xs">
-        </div>
-        <div class="flex flex-col">
-            <label for="edit-alamat">Alamat</label>
-            <textarea id="edit-alamat" class="border rounded p-1 text-xs"></textarea>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col">
+                <label for="edit-nisn" class="text-sm font-medium text-gray-700 mb-1">NISN</label>
+                <input id="edit-nisn" type="text" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-nama" class="text-sm font-medium text-gray-700 mb-1">Nama</label>
+                <input id="edit-nama" type="text" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-tempat-lahir" class="text-sm font-medium text-gray-700 mb-1">Tempat Lahir</label>
+                <input id="edit-tempat-lahir" type="text" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-tanggal-lahir" class="text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
+                <input id="edit-tanggal-lahir" type="date" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-no-telp" class="text-sm font-medium text-gray-700 mb-1">No Telepon</label>
+                <input id="edit-no-telp" type="text" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-jenis_kelamin" class="text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
+                <select id="edit-jenis_kelamin" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-jenjang" class="text-sm font-medium text-gray-700 mb-1">Jenjang</label>
+                <select id="edit-jenjang" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="SD">SD</option>
+                    <option value="SMP">SMP</option>
+                    <option value="SMA">SMA</option>
+                    <option value="SMK">SMK</option>
+                </select>
+            </div>
         </div>
 
-        <button id="simpan-btn" class="bg-green-500 text-white py-1 px-3 rounded">Simpan</button>
+        <div class="font-medium text-lg text-[#0267B2] mt-4 mb-2">Data Orang Tua</div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col">
+                <label for="edit-nama-ayah" class="text-sm font-medium text-gray-700 mb-1">Nama Ayah</label>
+                <input id="edit-nama-ayah" type="text" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-nama-ibu" class="text-sm font-medium text-gray-700 mb-1">Nama Ibu</label>
+                <input id="edit-nama-ibu" type="text" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-pekerjaan-ayah" class="text-sm font-medium text-gray-700 mb-1">Pekerjaan Ayah</label>
+                <select id="edit-pekerjaan-ayah" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="">Pilih Pekerjaan Ayah</option>
+                </select>
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-pekerjaan-ibu" class="text-sm font-medium text-gray-700 mb-1">Pekerjaan Ibu</label>
+                <select id="edit-pekerjaan-ibu" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="">Pilih Pekerjaan Ibu</option>
+                </select>
+            </div>
+            <div class="flex flex-col col-span-1 md:col-span-2">
+                <label for="edit-penghasilan-ortu" class="text-sm font-medium text-gray-700 mb-1">Penghasilan Orang Tua</label>
+                <select id="edit-penghasilan-ortu" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="">Pilih Penghasilan Orang Tua</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex flex-col">
+            <label for="edit-alamat" class="text-sm font-medium text-gray-700 mb-1">Alamat</label>
+            <textarea id="edit-alamat" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" rows="3"></textarea>
+        </div>
+
+        <div class="flex gap-2 mt-4">
+            <button id="simpan-btn" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded transition-colors">Simpan</button>
+            <button id="batal-btn" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded transition-colors">Batal</button>
+        </div>
     </div>
 
     <!-- Tombol Edit -->
@@ -261,10 +294,13 @@
             });
         });
 
-        document.getElementById('edit-btn').addEventListener('click', () => {
+        document.getElementById('edit-btn').addEventListener('click', async () => {
             document.getElementById('info-display').classList.add('hidden');
             document.getElementById('edit-form').classList.remove('hidden');
+            
             const getText = id => document.getElementById(id).textContent;
+            
+            // Populate basic form fields
             document.getElementById('edit-nisn').value = getText('nisn');
             document.getElementById('edit-nama').value = getText('nama');
             const [tempat, tanggal] = getText('tempat-tanggal-lahir').split(', ');
@@ -276,7 +312,97 @@
             document.getElementById('edit-alamat').value = getText('alamat');
             document.getElementById('edit-nama-ayah').value = getText('nama-ayah');
             document.getElementById('edit-nama-ibu').value = getText('nama-ibu');
-            document.getElementById('edit-penghasilan-ayah').value = getText('penghasilan-ayah');
+            
+            // Fetch pekerjaan ortu data for dropdowns
+            try {
+                const pekerjaanRes = await AwaitFetchApi('pekerjaan-ortu', 'GET', null);
+                
+                if (pekerjaanRes.meta?.code === 200) {
+                    const pekerjaanAyahSelect = document.getElementById('edit-pekerjaan-ayah');
+                    const pekerjaanIbuSelect = document.getElementById('edit-pekerjaan-ibu');
+                    
+                    // Clear existing options except the first one
+                    pekerjaanAyahSelect.innerHTML = '<option value="">Pilih Pekerjaan Ayah</option>';
+                    pekerjaanIbuSelect.innerHTML = '<option value="">Pilih Pekerjaan Ibu</option>';
+                    
+                    // Get the data array from the correct location
+                    let pekerjaanData = [];
+                    if (Array.isArray(pekerjaanRes.data)) {
+                        pekerjaanData = pekerjaanRes.data;
+                    } else if (Array.isArray(pekerjaanRes.data?.data)) {
+                        pekerjaanData = pekerjaanRes.data.data;
+                    }
+                    
+                    // Add options from API and set selected value
+                    const pekerjaanAyahText = getText('pekerjaan-ayah');
+                    const pekerjaanIbuText = getText('pekerjaan-ibu');
+                    
+                    pekerjaanData.forEach(item => {
+                        const optionAyah = document.createElement('option');
+                        optionAyah.value = item.id;
+                        optionAyah.textContent = item.nama_pekerjaan;
+                        if (item.nama_pekerjaan === pekerjaanAyahText) {
+                            optionAyah.selected = true;
+                        }
+                        pekerjaanAyahSelect.appendChild(optionAyah);
+                        
+                        const optionIbu = document.createElement('option');
+                        optionIbu.value = item.id;
+                        optionIbu.textContent = item.nama_pekerjaan;
+                        if (item.nama_pekerjaan === pekerjaanIbuText) {
+                            optionIbu.selected = true;
+                        }
+                        pekerjaanIbuSelect.appendChild(optionIbu);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching pekerjaan ortu:', error);
+            }
+            
+            // Fetch penghasilan ortu data for dropdown
+            try {
+                const penghasilanRes = await AwaitFetchApi('user/penghasilan-ortu', 'GET', null);
+                
+                if (penghasilanRes.meta?.code === 200) {
+                    const penghasilanSelect = document.getElementById('edit-penghasilan-ortu');
+                    
+                    // Clear existing options
+                    penghasilanSelect.innerHTML = '<option value="">Pilih Penghasilan Orang Tua</option>';
+                    
+                    // Get the data array
+                    let penghasilanData = [];
+                    if (Array.isArray(penghasilanRes.data)) {
+                        penghasilanData = penghasilanRes.data;
+                    } else if (Array.isArray(penghasilanRes.data?.data)) {
+                        penghasilanData = penghasilanRes.data.data;
+                    }
+                    
+                    // Get current penghasilan text
+                    const penghasilanText = getText('penghasilan-ayah');
+                    
+                    // Add options from API
+                    penghasilanData.forEach((item, index) => {
+                        const option = document.createElement('option');
+                        option.value = index + 1; // Use index+1 as value
+                        option.textContent = item.penghasilan_ortu;
+                        
+                        // Select the matching option
+                        if (item.penghasilan_ortu === penghasilanText) {
+                            option.selected = true;
+                        }
+                        
+                        penghasilanSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching penghasilan ortu:', error);
+            }
+        });
+
+        // Add a cancel button handler
+        document.getElementById('batal-btn').addEventListener('click', () => {
+            document.getElementById('edit-form').classList.add('hidden');
+            document.getElementById('info-display').classList.remove('hidden');
         });
 
         document.getElementById('simpan-btn').addEventListener('click', async () => {
@@ -294,12 +420,38 @@
             const ortuData = {
                 nama_ayah: document.getElementById('edit-nama-ayah').value,
                 nama_ibu: document.getElementById('edit-nama-ibu').value,
-                penghasilan_ortu_id: document.getElementById('edit-penghasilan-ayah').value,
+                no_telp: document.getElementById('edit-no-telp').value,
+                pekerjaan_ayah_id: document.getElementById('edit-pekerjaan-ayah').value || null,
+                pekerjaan_ibu_id: document.getElementById('edit-pekerjaan-ibu').value || null,
+                penghasilan_ortu_id: document.getElementById('edit-penghasilan-ortu').value || null
             };
 
-            await AwaitFetchApi('user/peserta', 'PUT', siswaData);
-            await AwaitFetchApi('user/biodata-ortu', 'PUT', ortuData);
-            location.reload();
+            try {
+                // Simpan data siswa terlebih dahulu
+                const responseForm = await AwaitFetchApi('user/peserta', 'PUT', siswaData);
+                
+                if (responseForm.meta?.code !== 200) {
+                    showNotification("Gagal memperbarui data siswa. Silakan coba lagi.", "error");
+                    return;
+                }
+                
+                // Cek apakah sudah ada data ortu
+                const pesertaRes = await AwaitFetchApi('user/peserta', 'GET', null);
+                const method = pesertaRes.data?.biodata_ortu ? 'PUT' : 'POST';
+                
+                // Gunakan POST jika belum ada data ortu, PUT jika sudah ada
+                const responseOrtu = await AwaitFetchApi('user/biodata-ortu', method, ortuData);
+                
+                if (responseOrtu.meta?.code >= 200 && responseOrtu.meta?.code < 300) {
+                    showNotification("Data berhasil diperbarui", "success");
+                    location.reload();
+                } else {
+                    showNotification("Gagal memperbarui data orang tua. Silakan coba lagi.", "error");
+                }
+            } catch (error) {
+                console.error('Error updating data:', error);
+                showNotification("Terjadi kesalahan saat memperbarui data.", "error");
+            }
         });
     </script>
 @endsection

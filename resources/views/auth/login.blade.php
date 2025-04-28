@@ -56,6 +56,10 @@
                     showNotification("Login Berhasil!", "success");         
                     localStorage.setItem('token', response.data.token);// notifikasi tersimpan
                     window.location.href = '/home';
+                } else if (response.meta.message === "Harap Membayar biaya pendaftaran akun" && response.data.qr_data) {
+                    // Tampilkan notifikasi dan modal QR untuk pembayaran
+                    showNotification("Harap selesaikan pembayaran biaya pendaftaran terlebih dahulu", "warning");
+                    showQRModal(response.data.qr_data);
                 }
             }
         });
