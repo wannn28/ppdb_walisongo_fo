@@ -35,7 +35,8 @@
     </div>
 
     <!-- Notifikasi Form -->
-    <div id="form-notification" class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-2 mb-4 text-xs rounded" role="alert">
+    <div id="form-notification"
+        class="hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-2 mb-4 text-xs rounded" role="alert">
         <p class="font-bold">Perhatian!</p>
         <p>Silahkan isi form pendaftaran terlebih dahulu.</p>
     </div>
@@ -43,7 +44,7 @@
     <!-- Konten lainnya tetap sama -->
     <div class="flex w-full max-w-sm justify-center">
         <div class="grid grid-cols-4 py-4 gap-8">
-            <a id="data-siswa-link" href="#" 
+            <a id="data-siswa-link" href="#"
                 class="text-center @if (request()->routeIs('data-siswa')) text-ppdb-green @else text-gray-500 @endif">
                 <div class="flex flex-col items-center">
                     <img src="{{ asset('assets/svg/Icon Data Siswa.svg') }}" alt="data siswa">
@@ -61,7 +62,8 @@
             </a>
             <a href="{{ route('pesan') }}" class="text-center relative">
                 <div class="flex flex-col items-center">
-                    <span id="navbar-unread-count" class="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold z-10 hidden"></span>
+                    <span id="navbar-unread-count"
+                        class="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold z-10 hidden"></span>
                     <img src="{{ asset('assets/svg/Icon Pesan.svg') }}" alt="Account">
                 </div>
             </a>
@@ -99,11 +101,12 @@
             <div class="text-sm font-semibold">Progress Pembayaran</div>
             <div id="payment-percentage" class="text-sm font-bold text-[#0267B2]">0%</div>
         </div>
-        
+
         <div class="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-            <div id="payment-progress-bar" class="absolute top-0 left-0 h-full bg-[#0267B2] rounded-full" style="width: 0%"></div>
+            <div id="payment-progress-bar" class="absolute top-0 left-0 h-full bg-[#0267B2] rounded-full" style="width: 0%">
+            </div>
         </div>
-        
+
         <div class="flex justify-between items-center text-xs">
             <div>
                 <span class="font-semibold">Total Dibayar:</span>
@@ -165,12 +168,12 @@
                             `Jenis Kelamin : ${peserta.jenis_kelamin}`;
                         document.getElementById('jenjang_sekolah').innerText =
                             `${peserta.jenjang_sekolah} WALISONGO SEMARANG`;
-                        
+
                         // Update badge jumlah pesan di navbar bawah
                         if (res.data.pesan !== undefined) {
                             const unreadCount = res.data.pesan;
                             const navbarBadge = document.getElementById('navbar-unread-count');
-                            
+
                             if (navbarBadge) {
                                 if (unreadCount > 0) {
                                     navbarBadge.textContent = unreadCount;
@@ -186,21 +189,53 @@
                         const formNotification = document.getElementById('form-notification');
                         const progressStepsContainer = document.getElementById('progress-steps-container');
                         const paymentProgressContainer = document.getElementById('payment-progress-container');
-                        
+
                         if (res.data.progressUser) {
                             // Jika sudah ada progress, aktifkan link data siswa
                             dataSiswaLink.href = "{{ route('data-siswa') }}";
                             dataSiswaLink.classList.remove('cursor-not-allowed', 'opacity-50');
                             formNotification.classList.add('hidden');
-                            
+
                             const progress = res.data.progressUser.progress;
 
                             // Logika penentuan tampilan progress bar
-                            if (progress === "1") {
+                            if (progress === "0") {
                                 // Tampilkan container progress steps
                                 progressStepsContainer.classList.remove('hidden');
                                 paymentProgressContainer.classList.add('hidden');
-                                
+
+                                // Jika progressUser null, nonaktifkan link data siswa dan tampilkan notifikasi
+                                dataSiswaLink.href = "#";
+                                dataSiswaLink.classList.add('cursor-not-allowed', 'opacity-50');
+                                formNotification.classList.remove('hidden');
+
+                                // Tambahkan event listener untuk menampilkan pesan saat diklik
+                                dataSiswaLink.addEventListener('click', function(e) {
+                                    e.preventDefault();
+                                    showNotification('Silahkan isi form pendaftaran terlebih dahulu.',
+                                        'error');
+                                });
+
+                                // Jika progress == null
+                                document.getElementById('img-isi-form').src = nowProgress1;
+                                document.getElementById('img-unggah-berkas').src = beforeProgressIcon2;
+                                document.getElementById('img-pengajuan-biaya').src = beforeProgressIcon3;
+                                document.getElementById('line1').src = linebefore;
+                                document.getElementById('line2').src = linebefore;
+
+                                // Link: Isi Form Pendaftaran
+                                document.getElementById('link-unggah').setAttribute('href',
+                                    '{{ route('form-pendaftaran') }}');
+                                document.getElementById('text-link-utama').innerText = 'Isi Form';
+                                document.getElementById('img-link').src =
+                                    '{{ asset('assets/svg/Terms and Conditions.svg') }}';
+                                document.getElementById('text-link-1').innerText = 'Isi Form';
+                                document.getElementById('text-link-2').innerText = 'Lengkapi Data Pendaftaran';
+                            } else if (progress === "1") {
+                                // Tampilkan container progress steps
+                                progressStepsContainer.classList.remove('hidden');
+                                paymentProgressContainer.classList.add('hidden');
+
                                 document.getElementById('img-isi-form').src = doneProgressIcon1;
                                 document.getElementById('img-unggah-berkas').src = nowProgress2;
                                 document.getElementById('img-pengajuan-biaya').src = beforeProgressIcon3;
@@ -208,17 +243,20 @@
                                 document.getElementById('line2').src = linebefore;
 
                                 // Link: Unggah Berkas
-                                document.getElementById('link-unggah').setAttribute('href', '{{ route("unggah-berkas") }}');
+                                document.getElementById('link-unggah').setAttribute('href',
+                                    '{{ route('unggah-berkas') }}');
                                 document.getElementById('text-link-utama').innerText = 'Unggah Berkas';
-                                document.getElementById('img-link').src = '{{ asset("assets/svg/Upload To FTP.svg") }}';
+                                document.getElementById('img-link').src =
+                                    '{{ asset('assets/svg/Upload To FTP.svg') }}';
                                 document.getElementById('text-link-1').innerText = 'Unggah Berkas';
-                                document.getElementById('text-link-2').innerText = 'Upload Dokumen Pendukung';
+                                document.getElementById('text-link-2').innerText =
+                                    'Upload Dokumen Pendukung';
 
                             } else if (progress === "2") {
                                 // Tampilkan container progress steps
                                 progressStepsContainer.classList.remove('hidden');
                                 paymentProgressContainer.classList.add('hidden');
-                                
+
                                 document.getElementById('img-isi-form').src = doneProgressIcon1;
                                 document.getElementById('img-unggah-berkas').src = doneProgressIcon2;
                                 document.getElementById('img-pengajuan-biaya').src = nowProgress3;
@@ -226,9 +264,11 @@
                                 document.getElementById('line2').src = linedone;
 
                                 // Link: Pengajuan Biaya
-                                document.getElementById('link-unggah').setAttribute('href', '{{ route("pengajuan-biaya") }}');
+                                document.getElementById('link-unggah').setAttribute('href',
+                                    '{{ route('pengajuan-biaya') }}');
                                 document.getElementById('text-link-utama').innerText = 'Pengajuan Biaya';
-                                document.getElementById('img-link').src = '{{ asset("assets/svg/Upload To FTP.svg") }}';
+                                document.getElementById('img-link').src =
+                                    '{{ asset('assets/svg/Upload To FTP.svg') }}';
                                 document.getElementById('text-link-1').innerText = 'Pengajuan Biaya';
                                 document.getElementById('text-link-2').innerText = 'Ajukan Pembiayaan Anda';
 
@@ -236,42 +276,49 @@
                                 // Sembunyikan container progress steps dan tampilkan payment progress
                                 progressStepsContainer.classList.add('hidden');
                                 paymentProgressContainer.classList.remove('hidden');
-                                
+
                                 // Data dummy untuk progress pembayaran
                                 // Dalam implementasi sebenarnya, data ini akan diambil dari backend
                                 const totalAmount = 10000000; // 10 juta
-                                const amountPaid = 2000000;   // 2 juta
+                                const amountPaid = 2000000; // 2 juta
                                 const percentage = Math.round((amountPaid / totalAmount) * 100);
-                                
+
                                 // Update payment progress UI
                                 document.getElementById('payment-percentage').innerText = `${percentage}%`;
-                                document.getElementById('payment-progress-bar').style.width = `${percentage}%`;
-                                document.getElementById('amount-paid').innerText = `Rp ${formatRupiah(amountPaid)}`;
-                                document.getElementById('total-amount').innerText = `Rp ${formatRupiah(totalAmount)}`;
-                                
+                                document.getElementById('payment-progress-bar').style.width =
+                                    `${percentage}%`;
+                                document.getElementById('amount-paid').innerText =
+                                    `Rp ${formatRupiah(amountPaid)}`;
+                                document.getElementById('total-amount').innerText =
+                                    `Rp ${formatRupiah(totalAmount)}`;
+
                                 // Link: Pembayaran
                                 document.getElementById('link-unggah').setAttribute('href', 'tes');
-                                document.getElementById('text-link-utama').innerText = 'Lanjutkan Pembayaran';
-                                document.getElementById('img-link').src = '{{ asset("assets/svg/Upload To FTP.svg") }}';
+                                document.getElementById('text-link-utama').innerText =
+                                    'Lanjutkan Pembayaran';
+                                document.getElementById('img-link').src =
+                                    '{{ asset('assets/svg/Upload To FTP.svg') }}';
                                 document.getElementById('text-link-1').innerText = 'Lanjutkan Pembayaran';
-                                document.getElementById('text-link-2').innerText = 'Selesaikan Proses Pembayaran Anda';
+                                document.getElementById('text-link-2').innerText =
+                                    'Selesaikan Proses Pembayaran Anda';
                             }
                         } else {
                             // Tampilkan container progress steps
                             progressStepsContainer.classList.remove('hidden');
                             paymentProgressContainer.classList.add('hidden');
-                            
+
                             // Jika progressUser null, nonaktifkan link data siswa dan tampilkan notifikasi
                             dataSiswaLink.href = "#";
                             dataSiswaLink.classList.add('cursor-not-allowed', 'opacity-50');
                             formNotification.classList.remove('hidden');
-                            
+
                             // Tambahkan event listener untuk menampilkan pesan saat diklik
                             dataSiswaLink.addEventListener('click', function(e) {
                                 e.preventDefault();
-                                showNotification('Silahkan isi form pendaftaran terlebih dahulu.', 'error');
+                                showNotification('Silahkan isi form pendaftaran terlebih dahulu.',
+                                    'error');
                             });
-                            
+
                             // Jika progress == null
                             document.getElementById('img-isi-form').src = nowProgress1;
                             document.getElementById('img-unggah-berkas').src = beforeProgressIcon2;
@@ -280,9 +327,11 @@
                             document.getElementById('line2').src = linebefore;
 
                             // Link: Isi Form Pendaftaran
-                            document.getElementById('link-unggah').setAttribute('href', '{{ route("form-pendaftaran") }}');
+                            document.getElementById('link-unggah').setAttribute('href',
+                                '{{ route('form-pendaftaran') }}');
                             document.getElementById('text-link-utama').innerText = 'Isi Form';
-                            document.getElementById('img-link').src = '{{ asset("assets/svg/Terms and Conditions.svg") }}';
+                            document.getElementById('img-link').src =
+                                '{{ asset('assets/svg/Terms and Conditions.svg') }}';
                             document.getElementById('text-link-1').innerText = 'Isi Form';
                             document.getElementById('text-link-2').innerText = 'Lengkapi Data Pendaftaran';
                         }
