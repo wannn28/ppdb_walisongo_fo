@@ -61,7 +61,7 @@
             </a>
             <a href="{{ route('pesan') }}" class="text-center relative">
                 <div class="flex flex-col items-center">
-                    <span id="navbar-unread-count" class="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold z-10"></span>
+                    <span id="navbar-unread-count" class="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold z-10 hidden"></span>
                     <img src="{{ asset('assets/svg/Icon Pesan.svg') }}" alt="Account">
                 </div>
             </a>
@@ -167,7 +167,7 @@
                             `${peserta.jenjang_sekolah} WALISONGO SEMARANG`;
                         
                         // Update badge jumlah pesan di navbar bawah
-                        if (res.data.pesan) {
+                        if (res.data.pesan !== undefined) {
                             const unreadCount = res.data.pesan;
                             const navbarBadge = document.getElementById('navbar-unread-count');
                             

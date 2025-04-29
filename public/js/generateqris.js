@@ -1,7 +1,7 @@
 function generateQRCode(elementId, data, options = {}) {
     // Default options
     const defaultOptions = {
-        size: 300,
+        size: 250, // Reduced size for better mobile display
         level: 'H', // Error correction level (L, M, Q, H)
         background: '#ffffff',
         foreground: '#000000'
@@ -62,6 +62,7 @@ function closeModal() {
     const modal = document.getElementById('qrisModal');
     if (modal) {
         modal.remove();
+        document.body.style.overflow = '';
     }
 }
 
@@ -80,16 +81,18 @@ function showQRModal(data) {
         background: rgba(0,0,0,0.5);
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: flex-start; 
         z-index: 1000;
+        overflow-y: auto;
+        padding: 20px 0;
     `;
 
     // Konten modal
     modal.innerHTML = `
-    <div class="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full mx-4">
-        <div class="text-center space-y-6">
-            <h2 class="text-2xl font-bold text-gray-800">Pembayaran QRIS</h2>
-            <div class="p-4 bg-gray-50 rounded-lg">
+    <div class="bg-white p-4 rounded-xl shadow-2xl max-w-md w-full mx-4 my-auto">
+        <div class="text-center space-y-4">
+            <h2 class="text-xl font-bold text-gray-800">Pembayaran QRIS</h2>
+            <div class="p-2 bg-gray-50 rounded-lg">
                 <canvas id="qrCanvas" class="mx-auto"></canvas>
             </div>
             <button onclick="downloadQRCode()" 
@@ -100,24 +103,31 @@ function showQRModal(data) {
                 Download QR Code
             </button>
             
-            <div class="bg-blue-50 p-4 rounded-lg text-left mt-4">
-                <h3 class="font-bold text-blue-800 mb-2">Langkah-Langkah Pembayaran:</h3>
-                <ol class="list-decimal list-inside text-sm text-gray-700 space-y-1.5">
-                    <li>Unduh atau screenshot kode QRIS di atas.</li>
-                    <li>Buka aplikasi dompet digital atau mobile banking yang Anda gunakan.</li>
-                    <li>Pindai atau unggah kode QRIS melalui aplikasi tersebut.</li>
-                    <li>Lakukan pembayaran sesuai dengan nominal yang tertera.</li>
-                    <li>Periksa status pembayaran Anda pada halaman ini setelah transaksi selesai.</li>
-                </ol>
+            <div class="bg-blue-50 p-3 rounded-lg text-left mt-3">
+                <button onclick="togglePaymentSteps()" class="w-full flex items-center justify-between font-bold text-blue-800 mb-0">
+                    <span>Langkah-Langkah Pembayaran</span>
+                    <svg id="paymentStepsArrow" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transform transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div id="paymentStepsContent" class="hidden mt-2">
+                    <ol class="list-decimal list-inside text-sm text-gray-700 space-y-1">
+                        <li>Unduh atau screenshot kode QRIS di atas.</li>
+                        <li>Buka aplikasi dompet digital atau mobile banking yang Anda gunakan.</li>
+                        <li>Pindai atau unggah kode QRIS melalui aplikasi tersebut.</li>
+                        <li>Lakukan pembayaran sesuai dengan nominal yang tertera.</li>
+                        <li>Periksa status pembayaran Anda pada halaman ini setelah transaksi selesai.</li>
+                    </ol>
+                </div>
             </div>
             
-            <div class="flex flex-col space-y-3 mt-4">
+            <div class="flex flex-col space-y-2 mt-3 pb-2">
                 <button onclick="checkPaymentStatus()" 
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-200">
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">
                     Cek Status Pembayaran
                 </button>
                 <button onclick="closeModal()" 
-                    class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-6 rounded-lg transition duration-200">
+                    class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-lg transition duration-200">
                     Tutup
                 </button>
             </div>
@@ -130,6 +140,28 @@ function showQRModal(data) {
 
     // Generate QR code
     generateQRCode('qrCanvas', data);
+    
+    // Ensure modal is scrollable on mobile
+    document.body.style.overflow = 'hidden';
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+}
+
+// Fungsi untuk toggle langkah-langkah pembayaran
+function togglePaymentSteps() {
+    const content = document.getElementById('paymentStepsContent');
+    const arrow = document.getElementById('paymentStepsArrow');
+    
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+    } else {
+        content.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+    }
 }
 
 async function checkPaymentStatus() {

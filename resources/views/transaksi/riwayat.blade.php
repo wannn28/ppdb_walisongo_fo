@@ -3,15 +3,8 @@
 @section('content')
     <div class="text-xl flex w-full justify-center font-bold">Riwayat</div>
     
-    <div id="riwayat-container" class="w-full font-thin text-xs">
+    <div id="riwayat-container" class="w-full font-normal text-xs">
         <!-- Data riwayat akan dimasukkan di sini lewat JavaScript -->
-        <div class="flex items-center justify-center p-4">
-            <div class="loading-dots">
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-                <div class="loading-dot"></div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -61,7 +54,7 @@
                         
                         // Add date header
                         let html = `
-                            <span class="bg-[#E5E5E5] w-full flex p-2">
+                            <span class="bg-[#E5E5E5] w-full flex p-2 font-normal text-gray mt-2">
                                 ${formattedDate}
                             </span>
                         `;
@@ -70,15 +63,29 @@
                         transaksiGroup.forEach(transaksi => {
                             // Format currency
                             const formattedAmount = new Intl.NumberFormat('id-ID').format(transaksi.total || 0);
+                            const namaTagihan = transaksi.tagihan?.nama_tagihan || '';
+                            
+                            // Format time (hours and minutes)
+                            let timeString = '';
+                            if (transaksi.created_at) {
+                                const datetime = new Date(transaksi.created_at);
+                                timeString = datetime.toLocaleTimeString('id-ID', {
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: false
+                                });
+                            }
                             
                             html += `
                                 <div class="flex justify-between p-2 border-b border-gray-400">
-                                    <div class="flex flex-col leading-none">
+                                    <div class="flex flex-col ">
+                                        <span class="font-norm">${namaTagihan}</span>
                                         <span>${transaksi.ref_no || 'No. ' + transaksi.id}</span>
                                         <span>${transaksi.method || 'Pembayaran'}</span>
                                     </div>
-                                    <div class="flex flex-col justify-center">
-                                        Rp${formattedAmount}
+                                    <div class="flex flex-col items-end justify-center">
+                                        <span class="font-norm">Rp${formattedAmount}</span>
+                                        <span class="text-gray-500">${timeString} WIB</span>
                                     </div>
                                 </div>
                             `;
@@ -90,7 +97,7 @@
                     container.innerHTML = '<div class="p-4 text-center text-gray-500">Tidak ada riwayat transaksi</div>';
                 }
             } catch (error) {
-                console.error('Error fetching transaction history:', error);
+                print.error('Error fetching transaction history:', error);
                 container.innerHTML = '<div class="p-4 text-center text-red-500">Terjadi kesalahan saat memuat data. Silakan coba lagi nanti.</div>';
             }
         });
