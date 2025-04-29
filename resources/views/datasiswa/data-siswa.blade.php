@@ -35,6 +35,11 @@
             <span>Jenjang</span>
             <span class="font-light text-xs" id="jenjang"></span>
         </div>
+        <!-- Kelas -->
+        <div class="text-sm font-medium flex flex-col pl-2 pr-2 pb-2 border-b border-gray-400">
+            <span>Kelas</span>
+            <span class="font-light text-xs" id="kelas"></span>
+        </div>
         <!-- Alamat -->
         <div class="text-sm font-medium flex flex-col pl-2 pr-2 pb-2 border-b border-gray-400">
             <span>Alamat</span>
@@ -110,6 +115,12 @@
                     <option value="SMK">SMK</option>
                 </select>
             </div>
+            <div class="flex flex-col">
+                <label for="edit-kelas" class="text-sm font-medium text-gray-700 mb-1">Kelas</label>
+                <select id="edit-kelas" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="">Pilih Kelas</option>
+                </select>
+            </div>
         </div>
 
         <div class="font-medium text-lg text-[#0267B2] mt-4 mb-2">Data Orang Tua</div>
@@ -173,6 +184,7 @@
             assignText('no-telp', data.no_telp);
             assignText('jenis_kelamin', data.jenis_kelamin);
             assignText('jenjang', data.jenjang_sekolah);
+            assignText('kelas', data.jurusan1?.jurusan);
             assignText('alamat', data.alamat);
 
             assignText('nama-ayah', data.biodata_ortu?.nama_ayah);
@@ -313,6 +325,38 @@
             document.getElementById('edit-nama-ayah').value = getText('nama-ayah');
             document.getElementById('edit-nama-ibu').value = getText('nama-ibu');
             
+            // Fetch jurusan data for Kelas dropdown
+            try {
+                const jurusanRes = await AwaitFetchApi('jurusan', 'GET', null);
+                if (jurusanRes.meta?.code === 200) {
+                    const kelasSelect = document.getElementById('edit-kelas');
+                    
+                    // Clear existing options except the first one
+                    kelasSelect.innerHTML = '<option value="">Pilih Kelas</option>';
+                    
+                    // Handle both possible response structures
+                    const jurusanData = Array.isArray(jurusanRes.data?.data) ? jurusanRes.data.data : 
+                                        Array.isArray(jurusanRes.data) ? jurusanRes.data : [];
+                    
+                    const currentKelas = getText('kelas');
+                    let currentKelasId = null;
+                    
+                    // Add options from API
+                    jurusanData.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.id;
+                        option.textContent = `${item.jurusan} (${item.jenjang_sekolah})`;
+                        if (item.jurusan === currentKelas) {
+                            option.selected = true;
+                            currentKelasId = item.id;
+                        }
+                        kelasSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching jurusan:', error);
+            }
+            
             // Fetch pekerjaan ortu data for dropdowns
             try {
                 const pekerjaanRes = await AwaitFetchApi('pekerjaan-ortu', 'GET', null);
@@ -414,6 +458,7 @@
                 no_telp: document.getElementById('edit-no-telp').value,
                 jenis_kelamin: document.getElementById('edit-jenis_kelamin').value,
                 jenjang_sekolah: document.getElementById('edit-jenjang').value,
+                jurusan1_id: parseInt(document.getElementById('edit-kelas').value) || null,
                 alamat: document.getElementById('edit-alamat').value,
             };
 
