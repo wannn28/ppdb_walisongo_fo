@@ -3,18 +3,9 @@
 @section('content')
     <div>
         <div class="text-xl flex w-full justify-center font-bold ">Pengajuan Biaya</div>
-        <div class="w-full justify-center font-medium flex text-[12px] text-[#757575]">Pilih opsi pendaftaran dan lengkapi
-            biaya</div>
+        <div class="w-full justify-center font-medium flex text-[12px] text-[#757575]">Detail biaya pendaftaran</div>
     </div>
-    <div class="w-full flex justify-between gap-4">
-        <button id="regulerBtn" onclick="toggleSelection('reguler')"
-            class="w-full h-10 bg-[#51C2FF] rounded-lg text-white cursor-pointer shadow-xl">Reguler</button>
-        <button id="unggulanBtn" onclick="toggleSelection('unggulan')"
-            class="w-full h-10 bg-[#D9D9D9] rounded-lg text-black cursor-pointer shadow-xl">Unggulan</button>
-    </div>
-
-    <!-- Section Reguler -->
-    <div id="regulerSection">
+    <div id="regulerSection" class="hidden">
         <div class="w-full justify-center font-thin flex text-[12px] text-[#757575]">Berikut adalah biaya tambahan untuk
             kategori reguler</div>
         <div class="border-2 border-black p-4 rounded-lg">
@@ -43,7 +34,7 @@
                 <span>Rp4.300.000</span>
             </div>
         </div>
-        <button class="mt-4 w-full h-10 bg-[#51C2FF] rounded-lg text-white cursor-pointer text-sm font-normal shadow-xl">
+        <button id="regulerPaymentBtn" class="mt-4 w-full h-10 bg-[#51C2FF] rounded-lg text-white cursor-pointer text-sm font-normal shadow-xl">
             Proses Pembayaran
         </button>
         <div class="text-[#757575] text-xs font-normal flex flex-col items-center justify-center text-center  p-2">
@@ -60,12 +51,12 @@
     <div id="unggulanSection" class="hidden">
         <div class="w-full flex justify-between gap-4 bg-[#51C2FF40] h-16 rounded-lg items-center p-2">
             <span>Booking Vee Rp1.000.000</span>
-            <button
+            <button id="bookVeeBtn"
                 class="w-24 flex justify-center text-xs bg-[#51C2FF] text-white p-2 rounded-lg shadow-lg">Booking</button>
         </div>
         <div class="mt-4 flex flex-col">
             Wakaf Perorangan
-            <input type="number"
+            <input type="number" id="wakafInput"
                 class="w-full h-12 pl-3 pr-4 border rounded-lg font-normal focus:outline-none placeholder:text-sm placeholder:font-normal"
                 placeholder="Masukkan Nominal">
             <div class="font-thin text-justify text-[#757575] flex flex-col gap-2 text-xs py-2 pb-2">
@@ -80,11 +71,11 @@
                 <div><span class="font-bold">Wakaf Permanent</span> adalah wakaf yang tidak bisa dikembalikan</div>
             </div>
             Bulanan (SPP/Infaq)
-            <input type="number"
+            <input type="number" id="sppInput"
                 class="w-full h-12 pl-3 pr-4 border rounded-lg font-normal focus:outline-none placeholder:text-sm placeholder:font-normal"
                 placeholder="Masukkan Nominal">
         </div>
-        <button class="w-full h-10 mt-4 bg-[#51C2FF] rounded-lg text-white cursor-pointer text-sm font-normal shadow-xl">
+        <button id="unggulanPaymentBtn" class="w-full h-10 mt-4 bg-[#51C2FF] rounded-lg text-white cursor-pointer text-sm font-normal shadow-xl">
             Proses Pembayaran
         </button>
         <div class="text-[#757575] text-xs font-normal flex flex-col items-center justify-center text-center  p-2">
@@ -98,41 +89,101 @@
     </div>
 
     <script>
-        function toggleSelection(type) {
-            const regulerSection = document.getElementById('regulerSection');
-            const unggulanSection = document.getElementById('unggulanSection');
-            const regulerBtn = document.getElementById('regulerBtn');
-            const unggulanBtn = document.getElementById('unggulanBtn');
-
-            if (type === 'reguler') {
-                regulerSection.classList.remove('hidden');
-                unggulanSection.classList.add('hidden');
-                regulerBtn.classList.add('bg-[#51C2FF]', 'text-white');
-                regulerBtn.classList.remove('bg-[#D9D9D9]', 'text-black');
-                unggulanBtn.classList.add('bg-[#D9D9D9]', 'text-black');
-                unggulanBtn.classList.remove('bg-[#51C2FF]', 'text-white');
-            } else {
-                regulerSection.classList.add('hidden');
-                unggulanSection.classList.remove('hidden');
-                unggulanBtn.classList.add('bg-[#51C2FF]', 'text-white');
-                unggulanBtn.classList.remove('bg-[#D9D9D9]', 'text-black');
-                regulerBtn.classList.add('bg-[#D9D9D9]', 'text-black');
-                regulerBtn.classList.remove('bg-[#51C2FF]', 'text-white');
-            }
-        }
-
-        // Init pertama kali
         document.addEventListener('DOMContentLoaded', function() {
-            toggleSelection('reguler');
             async function fetchPengajuanBiaya() {
                 try {
                     const response = await AwaitFetchApi('user/pengajuan-biaya', 'GET');
-                    print.log('API Response - pengajuan biaya:', response);
-
+                    console.log('API Response - pengajuan biaya:', response);
+                    
+                    if (response && response.data && response.data.jurusan) {
+                        const jurusan = response.data.jurusan.toLowerCase();
+                        
+                        if (jurusan === 'reguler') {
+                            document.getElementById('regulerSection').classList.remove('hidden');
+                            document.getElementById('unggulanSection').classList.add('hidden');
+                        } else if (jurusan === 'unggulan') {
+                            document.getElementById('regulerSection').classList.add('hidden');
+                            document.getElementById('unggulanSection').classList.remove('hidden');
+                        }
+                    }
                 } catch (error) {
-                    print.error('Error fetching jurusan data:', error);
+                    console.error('Error fetching pengajuan biaya data:', error);
                 }
             }
+            
+            // Set up event listeners for payment buttons
+            document.getElementById('regulerPaymentBtn').addEventListener('click', async function() {
+                try {
+                    const response = await AwaitFetchApi('user/pengajuan-biaya/reguler', 'PUT');
+                    if (response && response.meta && response.meta.code === 200) {
+                        showNotification('Pembayaran reguler berhasil diproses');
+                        window.location.reload();
+                    } else {
+                        showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses pembayaran');
+                    }
+                } catch (error) {
+                    console.error('Error processing reguler payment:', error);
+                    showNotification('Terjadi kesalahan saat memproses pembayaran');
+                }
+            });
+            
+            document.getElementById('unggulanPaymentBtn').addEventListener('click', async function() {
+                try {
+                    const wakafNominal = document.getElementById('wakafInput').value;
+                    const sppNominal = document.getElementById('sppInput').value;
+                    
+                    if (!wakafNominal) {
+                        showNotification('Mohon isi nominal wakaf');
+                        return;
+                    }
+                    
+                    if (!sppNominal) {
+                        showNotification('Mohon isi nominal SPP/Infaq');
+                        return;
+                    }
+                    
+                    // Process wakaf payment
+                    const wakafResponse = await AwaitFetchApi('user/pengajuan-biaya/wakaf', 'PUT', {
+                        wakaf: parseInt(wakafNominal)
+                    });
+                    
+                    if (!wakafResponse || wakafResponse.meta.code !== 200) {
+                        showNotification(wakafResponse?.meta?.message || 'Terjadi kesalahan saat memproses wakaf');
+                        return;
+                    }
+                    
+                    // Process SPP payment
+                    const sppResponse = await AwaitFetchApi('user/pengajuan-biaya/spp', 'PUT', {
+                        spp: parseInt(sppNominal)
+                    });
+                    
+                    if (sppResponse && sppResponse.meta.code === 200) {
+                        showNotification('Pembayaran unggulan berhasil diproses');
+                        window.location.reload();
+                    } else {
+                        showNotification(sppResponse?.meta?.message || 'Terjadi kesalahan saat memproses SPP/Infaq');
+                    }
+                } catch (error) {
+                    console.error('Error processing unggulan payment:', error);
+                    showNotification('Terjadi kesalahan saat memproses pembayaran');
+                }
+            });
+            
+            document.getElementById('bookVeeBtn').addEventListener('click', async function() {
+                try {
+                    const response = await AwaitFetchApi('user/pengajuan-biaya/book-vee', 'PUT');
+                    
+                    if (response && response.meta && response.meta.code === 200) {
+                        showNotification('Booking Vee berhasil diproses');
+                    } else {
+                        showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses Booking Vee');
+                    }
+                } catch (error) {
+                    console.error('Error processing book vee:', error);
+                    showNotification('Terjadi kesalahan saat memproses Booking Vee');
+                }
+            });
+            
             fetchPengajuanBiaya();
         });
     </script>
