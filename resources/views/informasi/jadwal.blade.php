@@ -9,15 +9,24 @@
       document.addEventListener('DOMContentLoaded', async () => {
          const container = document.getElementById('jadwalContainer');
 
-         const res = await AwaitFetchApi('user/media', 'GET', null);
+         const res = await AwaitFetchApi('user/media/jadwal', 'GET', null);
 
          let imageUrls = [];
 
+         console.log('API Response:', res); // Log untuk debugging
+
          // Ambil gambar jika tersedia
-         if (res.meta?.code === 200 && Array.isArray(res.data?.data) && res.data.data.length > 0) {
-            imageUrls = res.data.data.map(item => item.url || item); // Ambil properti 'url' jika ada
+         if (res.meta?.code === 200) {
+            // Struktur API: {meta: {...}, data: [{id, jenjang_sekolah, url, ...}]}
+            if (Array.isArray(res.data) && res.data.length > 0) {
+               imageUrls = res.data.map(item => item.url);
+            }
          } else {
             // Fallback
+            imageUrls = ['assets/img/jadwal.png'];
+         }
+
+         if (imageUrls.length === 0) {
             imageUrls = ['assets/img/jadwal.png'];
          }
 

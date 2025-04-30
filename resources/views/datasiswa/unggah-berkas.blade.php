@@ -75,10 +75,8 @@
 
             if (response.meta?.code === 200) {
                 showNotification("Berkas berhasil diunggah!", "success");
-                location.reload();
-            } else {
-                showNotification(response.meta?.message || "Gagal mengunggah: Terjadi kesalahan.", "error");
-            }
+                window.location.href = '/home';
+            } 
         });
     </script>
 @endsection

@@ -425,9 +425,9 @@
                     const penghasilanText = getText('penghasilan-ayah');
                     
                     // Add options from API
-                    penghasilanData.forEach((item, index) => {
+                    penghasilanData.forEach((item) => {
                         const option = document.createElement('option');
-                        option.value = index + 1; // Use index+1 as value
+                        option.value = item.id; // Use the actual ID from the database
                         option.textContent = item.penghasilan_ortu;
                         
                         // Select the matching option
