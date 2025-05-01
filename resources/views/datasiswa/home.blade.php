@@ -26,7 +26,7 @@
         <div class="text-xs px-4 pb-2 font-normal">
             <div class="flex justify-between">
                 <span id="jenis_kelamin">Jenis Kelamin : </span>
-                {{-- <span id="jurusan1">Program : IPA</span> --}}
+                <span id="status">Status : </span>
             </div>
         </div>
         <div id="jenjang_sekolah" class="bg-transparent text-white text-sm font-bold px-4 pb-4 pt-2">
@@ -166,6 +166,8 @@
                         document.getElementById('role').innerText = "Siswa";
                         document.getElementById('jenis_kelamin').innerText =
                             `Jenis Kelamin : ${peserta.jenis_kelamin}`;
+                        document.getElementById('status').innerText =
+                            `Status : ${peserta.status ? peserta.status : '-'}`;
                         document.getElementById('jenjang_sekolah').innerText =
                             `${peserta.jenjang_sekolah} WALISONGO SEMARANG`;
 
@@ -277,30 +279,32 @@
                                 progressStepsContainer.classList.add('hidden');
                                 paymentProgressContainer.classList.remove('hidden');
 
-                                // Data dummy untuk progress pembayaran
-                                // Dalam implementasi sebenarnya, data ini akan diambil dari backend
-                                const totalAmount = 10000000; // 10 juta
-                                const amountPaid = 2000000; // 2 juta
-                                const percentage = Math.round((amountPaid / totalAmount) * 100);
+                                // Fetch payment progress data from API
+                                AwaitFetchApi('user/progressPayment', 'GET', null)
+                                    .then(response => {
+                                        if (response && response.data) {
+                                            const paymentData = response.data;
+                                            const totalAmount = paymentData.paid + paymentData.unpaid;
+                                            const amountPaid = paymentData.paid;
+                                            const percentage = totalAmount > 0 ? Math.round((amountPaid / totalAmount) * 100) : 0;
 
-                                // Update payment progress UI
-                                document.getElementById('payment-percentage').innerText = `${percentage}%`;
-                                document.getElementById('payment-progress-bar').style.width =
-                                    `${percentage}%`;
-                                document.getElementById('amount-paid').innerText =
-                                    `Rp ${formatRupiah(amountPaid)}`;
-                                document.getElementById('total-amount').innerText =
-                                    `Rp ${formatRupiah(totalAmount)}`;
+                                            // Update payment progress UI
+                                            document.getElementById('payment-percentage').innerText = `${percentage}%`;
+                                            document.getElementById('payment-progress-bar').style.width = `${percentage}%`;
+                                            document.getElementById('amount-paid').innerText = `Rp ${formatRupiah(amountPaid)}`;
+                                            document.getElementById('total-amount').innerText = `Rp ${formatRupiah(totalAmount)}`;
+                                        }
+                                    })
+                                    .catch(error => {
+                                        print.error('Error fetching payment data:', error);
+                                    });
 
                                 // Link: Pembayaran
                                 document.getElementById('link-unggah').setAttribute('href', 'tes');
-                                document.getElementById('text-link-utama').innerText =
-                                    'Lanjutkan Pembayaran';
-                                document.getElementById('img-link').src =
-                                    '{{ asset('assets/svg/Upload To FTP.svg') }}';
+                                document.getElementById('text-link-utama').innerText = 'Lanjutkan Pembayaran';
+                                document.getElementById('img-link').src = '{{ asset('assets/svg/Upload To FTP.svg') }}';
                                 document.getElementById('text-link-1').innerText = 'Lanjutkan Pembayaran';
-                                document.getElementById('text-link-2').innerText =
-                                    'Selesaikan Proses Pembayaran Anda';
+                                document.getElementById('text-link-2').innerText = 'Selesaikan Proses Pembayaran Anda';
                             }
                         } else {
                             // Tampilkan container progress steps
