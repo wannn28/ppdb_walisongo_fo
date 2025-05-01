@@ -24,7 +24,7 @@
         </div>
         <div class="text-xs grid grid-cols-2 gap-4">
             <div>
-                Kelas 1
+                Kelas
                 <select id="jurusan1" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight">
                     <option value="">Pilih Kelas</option>
                 </select>

@@ -65,6 +65,9 @@
                             const formattedAmount = new Intl.NumberFormat('id-ID').format(transaksi.total || 0);
                             const namaTagihan = transaksi.tagihan?.nama_tagihan || '';
                             
+                            // Remove underscores and capitalize first letter of each word
+                            const formattedNamaTagihan = namaTagihan.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+                            
                             // Format time (hours and minutes)
                             let timeString = '';
                             if (transaksi.created_at) {
@@ -77,16 +80,16 @@
                             }
                             
                             html += `
-                                <div class="flex justify-between p-2 border-b border-gray-400">
-                                    <div class="flex flex-col ">
-                                        <span class="font-norm">${namaTagihan}</span>
+                                <div class="flex justify-between border-b border-gray-400 relative pb-2 pl-2">
+                                    <div class="flex flex-col">
+                                        <span class="font-medium text-sm">${formattedNamaTagihan}</span>
                                         <span>${transaksi.ref_no || 'No. ' + transaksi.id}</span>
                                         <span>${transaksi.method || 'Pembayaran'}</span>
                                     </div>
-                                    <div class="flex flex-col items-end justify-center">
-                                        <span class="font-norm">Rp${formattedAmount}</span>
-                                        <span class="text-gray-500">${timeString} WIB</span>
+                                    <div class="absolute bottom-2 right-2">
+                                        <span class="font-normal text-sm">Rp${formattedAmount}</span>
                                     </div>
+                                    <span class="absolute top-1 right-2 text-[10px] text-gray-500">${timeString}</span>
                                 </div>
                             `;
                         });

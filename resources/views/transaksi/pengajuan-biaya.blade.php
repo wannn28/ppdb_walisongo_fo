@@ -6,38 +6,15 @@
         <div class="w-full justify-center font-medium flex text-[12px] text-[#757575]">Detail biaya pendaftaran</div>
     </div>
     <div id="regulerSection" class="hidden">
-        <div class="w-full justify-center font-thin flex text-[12px] text-[#757575]">Berikut adalah biaya tambahan untuk
-            kategori reguler</div>
-        <div class="border-2 border-black p-4 rounded-lg">
-            <div class="flex w-full justify-between border-b border-gray-400 font-normal text-xs pb-2 py-2">
-                <span>Uang Pendaftaran : </span>
-                <span>Rp500.000</span>
-            </div>
-            <div class="flex w-full justify-between border-b border-gray-400 font-normal text-xs pb-2 py-2">
-                <span>Uang Seragam : </span>
-                <span>Rp750.000</span>
-            </div>
-            <div class="flex w-full justify-between border-b border-gray-400 font-normal text-xs pb-2 py-2">
-                <span>Uang Buku atau Modul : </span>
-                <span>Rp1.000.000</span>
-            </div>
-            <div class="flex w-full justify-between border-b border-gray-400 font-normal text-xs pb-2 py-2">
-                <span>SPP Bulanan : </span>
-                <span>Rp300.000</span>
-            </div>
-            <div class="flex w-full justify-between border-b border-gray-400 font-normal text-xs pb-2 py-2">
-                <span>Biaya Kegiatan : </span>
-                <span>Rp250.000</span>
-            </div>
-            <div class="flex w-full justify-between font-bold text-xs pb-2 py-2">
-                <span>Total : </span>
-                <span>Rp4.300.000</span>
-            </div>
+        <div id="regulerImageContainer" class="w-full mt-4"></div>
+        <div class="flex w-full justify-between font-bold text-xs pb-2 py-4">
+            <span>Total : </span>
+            <span>Rp4.300.000</span>
         </div>
         <button id="regulerPaymentBtn" class="mt-4 w-full h-10 bg-[#51C2FF] rounded-lg text-white cursor-pointer text-sm font-normal shadow-xl">
             Proses Pembayaran
         </button>
-        <div class="text-[#757575] text-xs font-normal flex flex-col items-center justify-center text-center  p-2">
+        <div class="text-[#757575] text-xs font-normal flex flex-col items-center justify-center text-center p-2">
             <div>
                 <img src="{{ asset('assets/svg/notif-message.svg') }}" alt="" class="mx-auto">
             </div>
@@ -87,23 +64,42 @@
             </div>
         </div>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             async function fetchPengajuanBiaya() {
                 try {
                     const response = await AwaitFetchApi('user/pengajuan-biaya', 'GET');
-                    console.log('API Response - pengajuan biaya:', response);
+                    print.log('API Response - pengajuan biaya:', response);
                     
                     if (response && response.data && response.data.jurusan) {
                         const jurusan = response.data.jurusan.toLowerCase();
                         
                         if (jurusan === 'reguler') {
-                            document.getElementById('regulerSection').classList.remove('hidden');
-                            document.getElementById('unggulanSection').classList.add('hidden');
+                            const mediaResponse = await AwaitFetchApi('user/media/pengajuan-biaya', 'GET');
+                            const regulerSection = document.getElementById('regulerSection');
+                            const unggulanSection = document.getElementById('unggulanSection');
+                            
+                            if (regulerSection) regulerSection.classList.remove('hidden');
+                            if (unggulanSection) unggulanSection.classList.add('hidden');
+                            
+                            // Display the image for reguler students
+                            if (mediaResponse && mediaResponse.data && mediaResponse.data.length > 0) {
+                                const imageUrl = mediaResponse.data[0].url;
+                                const imageContainer = document.getElementById('regulerImageContainer');
+                                if (imageContainer && imageUrl) {
+                                    const img = document.createElement('img');
+                                    img.src = imageUrl;
+                                    img.className = 'w-full rounded-lg';
+                                    img.alt = 'Pengajuan Biaya';
+                                    imageContainer.appendChild(img);
+                                }
+                            }
                         } else if (jurusan === 'unggulan') {
-                            document.getElementById('regulerSection').classList.add('hidden');
-                            document.getElementById('unggulanSection').classList.remove('hidden');
+                            const regulerSection = document.getElementById('regulerSection');
+                            const unggulanSection = document.getElementById('unggulanSection');
+                            
+                            if (regulerSection) regulerSection.classList.add('hidden');
+                            if (unggulanSection) unggulanSection.classList.remove('hidden');
                             
                             // Update booking fee text with amount from API
                             if (response.data) {
@@ -135,82 +131,99 @@
                         }
                     }
                 } catch (error) {
-                    console.error('Error fetching pengajuan biaya data:', error);
+                    print.error('Error fetching pengajuan biaya data:', error);
                 }
             }
             
             // Set up event listeners for payment buttons
-            document.getElementById('regulerPaymentBtn').addEventListener('click', async function() {
-                try {
-                    const response = await AwaitFetchApi('user/pengajuan-biaya/reguler', 'PUT');
-                    if (response && response.meta && response.meta.code === 200) {
-                        showNotification('Pembayaran reguler berhasil diproses');
-                        window.location.reload();
-                    } else {
-                        showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses pembayaran');
+            const regulerPaymentBtn = document.getElementById('regulerPaymentBtn');
+            if (regulerPaymentBtn) {
+                regulerPaymentBtn.addEventListener('click', async function() {
+                    try {
+                        const response = await AwaitFetchApi('user/pengajuan-biaya/reguler', 'PUT');
+                        if (response && response.meta && response.meta.code === 200) {
+                            showNotification('Pembayaran reguler berhasil diproses');
+                            window.location.reload();
+                        } else {
+                            showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses pembayaran');
+                        }
+                    } catch (error) {
+                        print.error('Error processing reguler payment:', error);
+                        showNotification('Terjadi kesalahan saat memproses pembayaran');
                     }
-                } catch (error) {
-                    console.error('Error processing reguler payment:', error);
-                    showNotification('Terjadi kesalahan saat memproses pembayaran');
-                }
-            });
+                });
+            }
             
-            document.getElementById('unggulanPaymentBtn').addEventListener('click', async function() {
-                try {
-                    const wakafNominal = document.getElementById('wakafInput').value;
-                    const sppNominal = document.getElementById('sppInput').value;
-                    
-                    if (!wakafNominal) {
-                        showNotification('Mohon isi nominal wakaf');
-                        return;
+            const unggulanPaymentBtn = document.getElementById('unggulanPaymentBtn');
+            if (unggulanPaymentBtn) {
+                unggulanPaymentBtn.addEventListener('click', async function() {
+                    try {
+                        const wakafInput = document.getElementById('wakafInput');
+                        const sppInput = document.getElementById('sppInput');
+                        
+                        if (!wakafInput || !wakafInput.value) {
+                            showNotification('Mohon isi nominal wakaf');
+                            return;
+                        }
+                        
+                        if (!sppInput || !sppInput.value) {
+                            showNotification('Mohon isi nominal SPP/Infaq');
+                            return;
+                        }
+                        
+                        const wakafNominal = wakafInput.value;
+                        const sppNominal = sppInput.value;
+                        
+                        // Process wakaf payment
+                        const wakafResponse = await AwaitFetchApi('user/pengajuan-biaya/wakaf', 'PUT', {
+                            wakaf: parseInt(wakafNominal)
+                        });
+                        
+                        if (!wakafResponse || wakafResponse.meta.code !== 200) {
+                            showNotification(wakafResponse?.meta?.message || 'Terjadi kesalahan saat memproses wakaf');
+                            return;
+                        }
+                        
+                        // Process SPP payment
+                        const sppResponse = await AwaitFetchApi('user/pengajuan-biaya/spp', 'PUT', {
+                            spp: parseInt(sppNominal)
+                        });
+                        
+                        if (sppResponse && sppResponse.meta.code === 200) {
+                            showNotification('Pembayaran unggulan berhasil diproses');
+                            window.location.reload();
+                        } else {
+                            showNotification(sppResponse?.meta?.message || 'Terjadi kesalahan saat memproses SPP/Infaq');
+                        }
+                    } catch (error) {
+                        print.error('Error processing unggulan payment:', error);
+                        showNotification('Terjadi kesalahan saat memproses pembayaran');
                     }
-                    
-                    if (!sppNominal) {
-                        showNotification('Mohon isi nominal SPP/Infaq');
-                        return;
-                    }
-                    
-                    // Process wakaf payment
-                    const wakafResponse = await AwaitFetchApi('user/pengajuan-biaya/wakaf', 'PUT', {
-                        wakaf: parseInt(wakafNominal)
-                    });
-                    
-                    if (!wakafResponse || wakafResponse.meta.code !== 200) {
-                        showNotification(wakafResponse?.meta?.message || 'Terjadi kesalahan saat memproses wakaf');
-                        return;
-                    }
-                    
-                    // Process SPP payment
-                    const sppResponse = await AwaitFetchApi('user/pengajuan-biaya/spp', 'PUT', {
-                        spp: parseInt(sppNominal)
-                    });
-                    
-                    if (sppResponse && sppResponse.meta.code === 200) {
-                        showNotification('Pembayaran unggulan berhasil diproses');
-                        window.location.reload();
-                    } else {
-                        showNotification(sppResponse?.meta?.message || 'Terjadi kesalahan saat memproses SPP/Infaq');
-                    }
-                } catch (error) {
-                    console.error('Error processing unggulan payment:', error);
-                    showNotification('Terjadi kesalahan saat memproses pembayaran');
-                }
-            });
+                });
+            }
             
-            document.getElementById('bookVeeBtn').addEventListener('click', async function() {
-                try {
-                    const response = await AwaitFetchApi('user/pengajuan-biaya/book-vee', 'PUT');
-                    
-                    if (response && response.meta && response.meta.code === 200) {
-                        showNotification('Booking Vee berhasil diproses');
-                    } else {
-                        showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses Booking Vee');
+            const bookVeeBtn = document.getElementById('bookVeeBtn');
+            if (bookVeeBtn) {
+                bookVeeBtn.addEventListener('click', async function() {
+                    try {
+                        const response = await AwaitFetchApi('user/pengajuan-biaya/book-vee', 'PUT');
+                        
+                        if (response && response.meta && response.meta.code === 200) {
+                            if (response.data && response.data.qr_data) {
+                                // Show QR modal with the QR data
+                                showQRModal(response.data.qr_data, response.data.va_number);
+                            } else {
+                                showNotification('Booking Vee berhasil diproses');
+                            }
+                        } else {
+                            showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses Booking Vee');
+                        }
+                    } catch (error) {
+                        print.error('Error processing book vee:', error);
+                        showNotification('Terjadi kesalahan saat memproses Booking Vee');
                     }
-                } catch (error) {
-                    console.error('Error processing book vee:', error);
-                    showNotification('Terjadi kesalahan saat memproses Booking Vee');
-                }
-            });
+                });
+            }
             
             fetchPengajuanBiaya();
         });

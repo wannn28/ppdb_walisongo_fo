@@ -20,7 +20,7 @@
         <a href="/data-siswa">
             <div class="flex font-normal border-b-2 py-2 border-gray-400">
                 <img src="{{ asset('assets/svg/User.svg') }}" alt="">
-                <span class="pl-2">Informasi Akun</span>
+                <span class="pl-2">Informasi Data Siswa</span>
             </div>
         </a>
         {{-- <div class="flex font-normal border-b-2 py-2 border-gray-400">

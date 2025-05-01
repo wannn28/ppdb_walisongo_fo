@@ -12,6 +12,7 @@
                 <th class="border border-gray-300 text-xs font-normal">No</th>
                 <th class="border border-gray-300 text-xs font-normal">Nama Siswa</th>
                 <th class="border border-gray-300 text-xs font-normal">Uang Wakaf</th>
+                <th class="border border-gray-300 text-xs font-normal">Waktu Pembayaran</th>
               </tr>
             </thead>
             <tbody id="peringkat-table-body">
@@ -35,9 +36,10 @@
                     response.data.forEach((item, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td class="border border-gray-300 text-xs font-normal">${item.id || '-'}</td>
+                            <td class="border border-gray-300 text-xs font-normal">${index + 1}</td>
                             <td class="border border-gray-300 text-xs font-normal">${item.peserta?.nama || '-'}</td>
                             <td class="border border-gray-300 text-xs font-normal">${item.peserta?.wakaf ? item.peserta.wakaf.toLocaleString() : '-'}</td>
+                            <td class="border border-gray-300 text-xs font-normal">${item.created_at ? new Date(item.created_at).toLocaleString('id-ID') : '-'}</td>
                         `;
                         tableBody.appendChild(row);
                     });

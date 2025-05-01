@@ -86,7 +86,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <!-- Global Loading Spinner -->
     <div id="global-loading"
-        class="fixed inset-0 z-[9999] bg-black bg-opacity-40 flex items-center justify-center hidden">
+        class="fixed inset-0 z-[99999999999999999999999999999999] bg-black bg-opacity-40 flex items-center justify-center hidden">
         <div class="minimal-loading-container">
             <div class="loading-dots">
                 <div class="loading-dot"></div>

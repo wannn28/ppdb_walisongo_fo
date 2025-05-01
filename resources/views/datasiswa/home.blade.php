@@ -132,6 +132,98 @@
             </div>
         </div>
     </a>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 w-11/12 max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Lanjutkan Pembayaran</h3>
+                <button id="close-payment-modal" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="payment-error" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-4 text-xs rounded">
+                <p class="font-bold">Error!</p>
+                <p id="payment-error-message">Error message will appear here.</p>
+            </div>
+
+            <div id="payment-form-container">
+                <form id="payment-form">
+                    <input type="hidden" id="payment-type" value="">
+                    <div class="mb-5">
+                        <div class="flex justify-between items-center mb-2">
+                            <label for="payment-amount" class="block text-sm font-medium text-gray-700">Nominal Pembayaran</label>
+                            <span class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full font-medium">Sisa Tagihan: <span id="unpaid-amount">Rp 0</span></span>
+                        </div>
+                        
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">Rp</span>
+                            </div>
+                            <input 
+                                type="number" 
+                                id="payment-amount" 
+                                class="w-full pl-12 pr-20 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-ppdb-green focus:border-ppdb-green text-lg" 
+                                placeholder="0"
+                                min="1"
+                                required
+                            >
+                            <div class="absolute inset-y-0 right-0 flex items-center">
+                                <button 
+                                    type="button" 
+                                    id="max-amount-btn" 
+                                    class="h-full inline-flex items-center px-3 border-l border-gray-300 bg-gray-50 text-gray-700 text-sm rounded-r-md hover:bg-gray-100 focus:outline-none transition-colors duration-200"
+                                >
+                                    Maksimal
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <p class="text-xs text-gray-500 mt-2">Masukkan nominal pembayaran sesuai kemampuan Anda.</p>
+                    </div>
+                    
+                    <div class="py-2">
+                        <button 
+                            type="submit" 
+                            id="payment-submit-btn"
+                            class="w-full bg-ppdb-green hover:bg-green-700 hover:text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline transition duration-150 ease-in-out flex items-center justify-center"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            Bayar Sekarang
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="payment-loading" class="hidden">
+                <div class="flex justify-center items-center py-4">
+                    <svg class="animate-spin h-8 w-8 text-ppdb-green mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span class="text-gray-700">Memproses pembayaran...</span>
+                </div>
+            </div>
+
+            <div id="payment-success" class="hidden">
+                <div class="text-center py-4">
+                    <svg class="mx-auto mb-4 w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Pembayaran Berhasil</h3>
+                    <p id="payment-success-message" class="text-sm text-gray-600 mb-4">Tagihan telah berhasil dibuat.</p>
+                    <button id="close-success" class="bg-ppdb-green hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -167,7 +259,7 @@
                         document.getElementById('jenis_kelamin').innerText =
                             `Jenis Kelamin : ${peserta.jenis_kelamin}`;
                         document.getElementById('status').innerText =
-                            `Status : ${peserta.status ? peserta.status : '-'}`;
+                            `Status : ${peserta.status ? peserta.status.charAt(0).toUpperCase() + peserta.status.slice(1) : '-'}`;
                         document.getElementById('jenjang_sekolah').innerText =
                             `${peserta.jenjang_sekolah} WALISONGO SEMARANG`;
 
@@ -284,15 +376,157 @@
                                     .then(response => {
                                         if (response && response.data) {
                                             const paymentData = response.data;
-                                            const totalAmount = paymentData.paid + paymentData.unpaid;
+                                            console.log("Payment data:", paymentData); // Debug log
+                                            
+                                            // Get paid amount
                                             const amountPaid = paymentData.paid;
-                                            const percentage = totalAmount > 0 ? Math.round((amountPaid / totalAmount) * 100) : 0;
+                                            // Get progress percentage from API
+                                            const percentage = paymentData.progress || 0;
+                                            
+                                            // Calculate total amount based on the specific API response pattern
+                                            let totalAmount;
+                                            
+                                            // The API response shows paid and unpaid are the same amount and progress is 100%
+                                            // This means the total should be just the paid amount (not paid+unpaid)
+                                            if (percentage === 100 && paymentData.paid === paymentData.unpaid) {
+                                                totalAmount = amountPaid; // Total is the same as the paid amount
+                                            } else if (paymentData.unpaid === 0) {
+                                                // If unpaid is 0, total is just the paid amount
+                                                totalAmount = amountPaid;
+                                            } else {
+                                                // If both paid and unpaid have value and they're different, only then add them
+                                                totalAmount = amountPaid + paymentData.unpaid;
+                                            }
 
                                             // Update payment progress UI
                                             document.getElementById('payment-percentage').innerText = `${percentage}%`;
                                             document.getElementById('payment-progress-bar').style.width = `${percentage}%`;
                                             document.getElementById('amount-paid').innerText = `Rp ${formatRupiah(amountPaid)}`;
                                             document.getElementById('total-amount').innerText = `Rp ${formatRupiah(totalAmount)}`;
+                                            
+                                            // Change the button appearance when progress is 100%
+                                            if (percentage === 100) {
+                                                const linkElement = document.getElementById('link-unggah');
+                                                
+                                                // Replace the link with a celebration UI
+                                                linkElement.removeAttribute('href');
+                                                linkElement.style.cursor = 'default';
+                                                
+                                                // Remove all event listeners to prevent any click actions
+                                                linkElement.outerHTML = linkElement.outerHTML; // This clones and replaces the element, removing all listeners
+                                                
+                                                // Re-get the element since we replaced it
+                                                const newLinkElement = document.getElementById('link-unggah');
+                                                
+                                                // Add click prevention
+                                                newLinkElement.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    return false;
+                                                });
+                                                
+                                                // Change the text and icon
+                                                document.getElementById('text-link-utama').innerText = 'Pembayaran Selesai';
+                                                
+                                                // Update the UI with celebration style
+                                                const linkContainer = linkElement.querySelector('div.bg-\\[\\#0267B2\\]');
+                                                if (linkContainer) {
+                                                    linkContainer.className = 'w-full bg-gradient-to-r from-green-500 to-blue-500 p-2 rounded-lg h-16 flex relative overflow-hidden';
+                                                    
+                                                    // Add confetti effect to the container
+                                                    linkContainer.innerHTML = `
+                                                        <div class="absolute inset-0">
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                        </div>
+                                                        <div class="z-10 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                            <div class="flex flex-col justify-center pl-2 text-white">
+                                                                <span class="font-bold">Pembayaran Selesai!</span>
+                                                                <span class="text-[10px]">Terima kasih atas pembayaran Anda</span>
+                                                            </div>
+                                                        </div>
+                                                    `;
+                                                    
+                                                    // Add the confetti style to the head
+                                                    const style = document.createElement('style');
+                                                    style.textContent = `
+                                                        .confetti-piece {
+                                                            position: absolute;
+                                                            width: 10px;
+                                                            height: 10px;
+                                                            background: #ffd300;
+                                                            top: 0;
+                                                            opacity: 0;
+                                                            animation: makeItRain 3s infinite ease-out;
+                                                        }
+                                                        .confetti-piece:nth-child(1) {
+                                                            left: 7%;
+                                                            transform: rotate(15deg);
+                                                            background: #9b59b6;
+                                                            animation-delay: 0s;
+                                                        }
+                                                        .confetti-piece:nth-child(2) {
+                                                            left: 25%;
+                                                            transform: rotate(45deg);
+                                                            background: #3498db;
+                                                            animation-delay: 0.2s;
+                                                        }
+                                                        .confetti-piece:nth-child(3) {
+                                                            left: 40%;
+                                                            transform: rotate(30deg);
+                                                            background: #e74c3c;
+                                                            animation-delay: 0.4s;
+                                                        }
+                                                        .confetti-piece:nth-child(4) {
+                                                            left: 60%;
+                                                            transform: rotate(60deg);
+                                                            background: #2ecc71;
+                                                            animation-delay: 0.6s;
+                                                        }
+                                                        .confetti-piece:nth-child(5) {
+                                                            left: 75%;
+                                                            transform: rotate(15deg);
+                                                            background: #f1c40f;
+                                                            animation-delay: 0.8s;
+                                                        }
+                                                        .confetti-piece:nth-child(6) {
+                                                            left: 90%;
+                                                            transform: rotate(45deg);
+                                                            background: #1abc9c;
+                                                            animation-delay: 1s;
+                                                        }
+                                                        .confetti-piece:nth-child(7) {
+                                                            left: 20%;
+                                                            transform: rotate(30deg);
+                                                            background: #e67e22;
+                                                            animation-delay: 1.2s;
+                                                        }
+                                                        @keyframes makeItRain {
+                                                            0% {
+                                                                opacity: 0;
+                                                                transform: translateY(0) scale(0);
+                                                            }
+                                                            50% {
+                                                                opacity: 1;
+                                                                transform: translateY(20px) scale(1);
+                                                            }
+                                                            100% {
+                                                                opacity: 0;
+                                                                transform: translateY(40px) scale(0.5);
+                                                            }
+                                                        }
+                                                    `;
+                                                    document.head.appendChild(style);
+                                                }
+                                            }
                                         }
                                     })
                                     .catch(error => {
@@ -300,11 +534,234 @@
                                     });
 
                                 // Link: Pembayaran
-                                document.getElementById('link-unggah').setAttribute('href', 'tes');
+                                document.getElementById('link-unggah').setAttribute('href', '#');
                                 document.getElementById('text-link-utama').innerText = 'Lanjutkan Pembayaran';
                                 document.getElementById('img-link').src = '{{ asset('assets/svg/Upload To FTP.svg') }}';
                                 document.getElementById('text-link-1').innerText = 'Lanjutkan Pembayaran';
                                 document.getElementById('text-link-2').innerText = 'Selesaikan Proses Pembayaran Anda';
+                                
+                                // Check if status is "diproses", hide payment link and show notification
+                                if (peserta.status && peserta.status.toLowerCase() === "diproses" || peserta.status && peserta.status.toLowerCase() === "ditolak") {
+                                    // Hide the payment link
+                                    document.getElementById('link-unggah').classList.add('pointer-events-none', 'opacity-50');
+                                    
+                                    // Add warning notification
+                                    const warningDiv = document.createElement('div');
+                                    warningDiv.className = 'bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-2 mt-4 text-xs rounded';
+                                    warningDiv.innerHTML = `
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <p class="font-bold">Menunggu persetujuan admin</p>
+                                        </div>
+                                        <p class="ml-6">Mohon tunggu konfirmasi dari admin untuk melanjutkan pembayaran.</p>
+                                    `;
+                                    
+                                    // Insert warning after the link-unggah element
+                                    document.getElementById('link-unggah').after(warningDiv);
+                                } else {
+                                    // First check if payment progress is already 100%
+                                    AwaitFetchApi('user/progressPayment', 'GET', null)
+                                        .then(initialResponse => {
+                                            if (initialResponse && initialResponse.data && initialResponse.data.progress === 100) {
+                                                // If progress is already 100%, directly update the UI to celebration state without adding click handler
+                                                const linkElement = document.getElementById('link-unggah');
+                                                
+                                                // Replace the link with a celebration UI
+                                                linkElement.removeAttribute('href');
+                                                linkElement.style.cursor = 'default';
+                                                
+                                                // Remove all event listeners to prevent any click actions
+                                                linkElement.outerHTML = linkElement.outerHTML;
+                                                
+                                                // Re-get the element since we replaced it
+                                                const newLinkElement = document.getElementById('link-unggah');
+                                                
+                                                // Add click prevention
+                                                newLinkElement.addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    return false;
+                                                });
+                                                
+                                                // Change the text and icon
+                                                document.getElementById('text-link-utama').innerText = 'Pembayaran Selesai';
+                                                
+                                                // Update the UI with celebration style
+                                                const linkContainer = newLinkElement.querySelector('div.bg-\\[\\#0267B2\\]');
+                                                if (linkContainer) {
+                                                    linkContainer.className = 'w-full bg-gradient-to-r from-green-500 to-blue-500 p-2 rounded-lg h-16 flex relative overflow-hidden';
+                                                    
+                                                    // Add confetti effect to the container
+                                                    linkContainer.innerHTML = `
+                                                        <div class="absolute inset-0">
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                            <div class="confetti-piece"></div>
+                                                        </div>
+                                                        <div class="z-10 flex items-center">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                            </svg>
+                                                            <div class="flex flex-col justify-center pl-2 text-white">
+                                                                <span class="font-bold">Pembayaran Selesai!</span>
+                                                                <span class="text-[10px]">Terima kasih atas pembayaran Anda</span>
+                                                            </div>
+                                                        </div>
+                                                    `;
+                                                    
+                                                    // Add the confetti style to the head
+                                                    const style = document.createElement('style');
+                                                    style.textContent = `
+                                                        .confetti-piece {
+                                                            position: absolute;
+                                                            width: 10px;
+                                                            height: 10px;
+                                                            background: #ffd300;
+                                                            top: 0;
+                                                            opacity: 0;
+                                                            animation: makeItRain 3s infinite ease-out;
+                                                        }
+                                                        .confetti-piece:nth-child(1) {
+                                                            left: 7%;
+                                                            transform: rotate(15deg);
+                                                            background: #9b59b6;
+                                                            animation-delay: 0s;
+                                                        }
+                                                        .confetti-piece:nth-child(2) {
+                                                            left: 25%;
+                                                            transform: rotate(45deg);
+                                                            background: #3498db;
+                                                            animation-delay: 0.2s;
+                                                        }
+                                                        .confetti-piece:nth-child(3) {
+                                                            left: 40%;
+                                                            transform: rotate(30deg);
+                                                            background: #e74c3c;
+                                                            animation-delay: 0.4s;
+                                                        }
+                                                        .confetti-piece:nth-child(4) {
+                                                            left: 60%;
+                                                            transform: rotate(60deg);
+                                                            background: #2ecc71;
+                                                            animation-delay: 0.6s;
+                                                        }
+                                                        .confetti-piece:nth-child(5) {
+                                                            left: 75%;
+                                                            transform: rotate(15deg);
+                                                            background: #f1c40f;
+                                                            animation-delay: 0.8s;
+                                                        }
+                                                        .confetti-piece:nth-child(6) {
+                                                            left: 90%;
+                                                            transform: rotate(45deg);
+                                                            background: #1abc9c;
+                                                            animation-delay: 1s;
+                                                        }
+                                                        .confetti-piece:nth-child(7) {
+                                                            left: 20%;
+                                                            transform: rotate(30deg);
+                                                            background: #e67e22;
+                                                            animation-delay: 1.2s;
+                                                        }
+                                                        @keyframes makeItRain {
+                                                            0% {
+                                                                opacity: 0;
+                                                                transform: translateY(0) scale(0);
+                                                            }
+                                                            50% {
+                                                                opacity: 1;
+                                                                transform: translateY(20px) scale(1);
+                                                            }
+                                                            100% {
+                                                                opacity: 0;
+                                                                transform: translateY(40px) scale(0.5);
+                                                            }
+                                                        }
+                                                    `;
+                                                    document.head.appendChild(style);
+                                                }
+                                            } else {
+                                                // Setup payment modal if status is not "diproses" and progress is not 100%
+                                                const paymentType = peserta.jurusan1 && peserta.jurusan1.jurusan === "reguler" ? "reguler" : "wakaf";
+                                                document.getElementById('payment-type').value = paymentType;
+                                                
+                                                // Fetch unpaid amount
+                                                let unpaidAmount = 0;
+                                                
+                                                // Add click event to open payment modal only if progress is not 100%
+                                                document.getElementById('link-unggah').addEventListener('click', function(e) {
+                                                    e.preventDefault();
+                                                    
+                                                    // Show loading inside modal first
+                                                    document.getElementById('payment-modal').classList.remove('hidden');
+                                                    document.getElementById('payment-form-container').classList.add('hidden');
+                                                    document.getElementById('payment-loading').classList.remove('hidden');
+                                                    
+                                                    // Fetch the latest payment progress data
+                                                    AwaitFetchApi('user/progressPayment', 'GET', null)
+                                                        .then(response => {
+                                                            document.getElementById('payment-loading').classList.add('hidden');
+                                                            document.getElementById('payment-form-container').classList.remove('hidden');
+                                                            
+                                                            if (response && response.data) {
+                                                                const paymentData = response.data;
+                                                                unpaidAmount = paymentData.unpaid;
+                                                                
+                                                                // Update UI with unpaid amount
+                                                                document.getElementById('unpaid-amount').textContent = `${formatRupiah(unpaidAmount)}`;
+                                                                
+                                                                // Set max amount for input
+                                                                const paymentInput = document.getElementById('payment-amount');
+                                                                paymentInput.setAttribute('max', unpaidAmount);
+                                                                
+                                                                // If unpaid is 0, show message and disable form
+                                                                if (unpaidAmount <= 0) {
+                                                                    showError('Tidak ada tagihan yang perlu dibayar');
+                                                                    paymentInput.disabled = true;
+                                                                    document.querySelector('#payment-form button[type="submit"]').disabled = true;
+                                                                    document.getElementById('max-amount-btn').disabled = true;
+                                                                    document.getElementById('max-amount-btn').classList.add('opacity-50', 'cursor-not-allowed');
+                                                                } else {
+                                                                    paymentInput.disabled = false;
+                                                                    document.querySelector('#payment-form button[type="submit"]').disabled = false;
+                                                                    document.getElementById('max-amount-btn').disabled = false;
+                                                                    document.getElementById('max-amount-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+                                                                }
+                                                            } else {
+                                                                showError('Gagal mendapatkan data tagihan');
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            document.getElementById('payment-loading').classList.add('hidden');
+                                                            document.getElementById('payment-form-container').classList.remove('hidden');
+                                                            showError('Terjadi kesalahan saat mengambil data tagihan');
+                                                            console.error('Error fetching payment data:', error);
+                                                        });
+                                                });
+                                                
+                                                // Set max amount button click handler
+                                                document.getElementById('max-amount-btn').addEventListener('click', function() {
+                                                    const paymentInput = document.getElementById('payment-amount');
+                                                    paymentInput.value = unpaidAmount;
+                                                    
+                                                    // Add animation to highlight the change
+                                                    paymentInput.classList.add('ring-2', 'ring-ppdb-green');
+                                                    setTimeout(() => {
+                                                        paymentInput.classList.remove('ring-2', 'ring-ppdb-green');
+                                                    }, 500);
+                                                });
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Error checking payment progress:', error);
+                                        });
+                                }
                             }
                         } else {
                             // Tampilkan container progress steps
@@ -344,6 +801,134 @@
                 .catch((error) => {
                     print.error('Error fetching peserta:', error);
                 });
+
+            // Payment Modal Functionality
+            const paymentModal = document.getElementById('payment-modal');
+            const closePaymentModal = document.getElementById('close-payment-modal');
+            const closeSuccess = document.getElementById('close-success');
+            const paymentForm = document.getElementById('payment-form');
+            const paymentFormContainer = document.getElementById('payment-form-container');
+            const paymentLoading = document.getElementById('payment-loading');
+            const paymentSuccess = document.getElementById('payment-success');
+            const paymentError = document.getElementById('payment-error');
+            const paymentErrorMessage = document.getElementById('payment-error-message');
+            const paymentSuccessMessage = document.getElementById('payment-success-message');
+
+            // Close modal when clicking the close button
+            if (closePaymentModal) {
+                closePaymentModal.addEventListener('click', function() {
+                    paymentModal.classList.add('hidden');
+                    resetPaymentModal();
+                });
+            }
+
+            // Close modal when clicking the success close button
+            if (closeSuccess) {
+                closeSuccess.addEventListener('click', function() {
+                    paymentModal.classList.add('hidden');
+                    resetPaymentModal();
+                    // Refresh the page to update payment status
+                    window.location.reload();
+                });
+            }
+
+            // Close modal when clicking outside the modal content
+            if (paymentModal) {
+                paymentModal.addEventListener('click', function(e) {
+                    if (e.target === paymentModal) {
+                        paymentModal.classList.add('hidden');
+                        resetPaymentModal();
+                    }
+                });
+            }
+
+            // Handle payment form submission
+            if (paymentForm) {
+                paymentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const amount = document.getElementById('payment-amount').value;
+                    const paymentType = document.getElementById('payment-type').value;
+                    const maxAmount = document.getElementById('payment-amount').getAttribute('max');
+                    const submitButton = document.getElementById('payment-submit-btn');
+                    
+                    if (!amount || amount <= 0) {
+                        showError('Nominal pembayaran harus lebih besar dari 0');
+                        return;
+                    }
+                    
+                    if (parseInt(amount) > parseInt(maxAmount)) {
+                        showError('Nominal pembayaran tidak boleh melebihi sisa tagihan');
+                        return;
+                    }
+                    
+                    // Hide error message if any
+                    paymentError.classList.add('hidden');
+                    
+                    // Determine endpoint based on payment type
+                    let endpoint;
+                    let payloadKey;
+                    
+                    if (paymentType === 'wakaf') {
+                        endpoint = 'user/pengajuan-biaya/bayar/wakaf';
+                        payloadKey = 'wakaf';
+                    } else {
+                        endpoint = 'user/pengajuan-biaya/bayar/reguler';
+                        payloadKey = 'pengajuan_biaya';
+                    }
+                    
+                    // Create payload
+                    const payload = {};
+                    payload[payloadKey] = parseInt(amount);
+                    
+                    // Submit payment using buttonAPI instead of direct AwaitFetchApi
+                    buttonAPI(
+                        endpoint, 
+                        'POST', 
+                        payload, 
+                        false, 
+                        submitButton, 
+                        'Memproses...'
+                    )
+                    .then(response => {
+                        if (response.meta.code === 200) {
+                            // Check if response contains QR/VA data
+                            if (response.data && (response.data.qr_data || response.data.va_number)) {
+                                // Close current modal
+                                paymentModal.classList.add('hidden');
+                                resetPaymentModal();
+                                
+                                // Show QR/VA modal using the function from window object
+                                window.showPaymentModal(response.data);
+                            } else {
+                                // Just show success message if no QR/VA data
+                                paymentSuccess.classList.remove('hidden');
+                                paymentSuccessMessage.textContent = response.meta.message;
+                            }
+                        } else {
+                            // Error handling is done automatically by buttonAPI/AwaitFetchApi
+                            paymentFormContainer.classList.remove('hidden');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Payment error:', error);
+                    });
+                });
+            }
+            
+            // Helper functions
+            function showError(message) {
+                paymentError.classList.remove('hidden');
+                paymentErrorMessage.textContent = message;
+            }
+            
+            function resetPaymentModal() {
+                if (paymentForm) paymentForm.reset();
+                if (paymentFormContainer) paymentFormContainer.classList.remove('hidden');
+                if (paymentLoading) paymentLoading.classList.add('hidden');
+                if (paymentSuccess) paymentSuccess.classList.add('hidden');
+                if (paymentError) paymentError.classList.add('hidden');
+            }
         });
     </script>
 @endpush
