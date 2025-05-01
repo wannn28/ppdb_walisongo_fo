@@ -49,8 +49,8 @@
 
     <!-- Section Unggulan -->
     <div id="unggulanSection" class="hidden">
-        <div class="w-full flex justify-between gap-4 bg-[#51C2FF40] h-16 rounded-lg items-center p-2">
-            <span>Booking Vee Rp1.000.000</span>
+        <div id="bookVeeContainer" class="w-full flex justify-between gap-4 bg-[#51C2FF40] h-16 rounded-lg items-center p-2">
+            <span id="bookVeeText">Booking Vee Rp-</span>
             <button id="bookVeeBtn"
                 class="w-24 flex justify-center text-xs bg-[#51C2FF] text-white p-2 rounded-lg shadow-lg">Booking</button>
         </div>
@@ -104,6 +104,34 @@
                         } else if (jurusan === 'unggulan') {
                             document.getElementById('regulerSection').classList.add('hidden');
                             document.getElementById('unggulanSection').classList.remove('hidden');
+                            
+                            // Update booking fee text with amount from API
+                            if (response.data) {
+                                const bookVeeText = document.getElementById('bookVeeText');
+                                if (bookVeeText) {
+                                    // Use a default value if nominal is not available
+                                    const amount = response.data.nominal ? response.data.nominal : 500000;
+                                    const formattedAmount = new Intl.NumberFormat('id-ID').format(amount);
+                                    bookVeeText.textContent = `Booking Vee Rp${formattedAmount}`;
+                                }
+                            }
+                            
+                            // Check if user has already paid for Book Vee
+                            if (response.meta && response.meta.message === "peserta sudah membayar book vee") {
+                                // Hide the Book Vee button and update the text
+                                const bookVeeBtn = document.getElementById('bookVeeBtn');
+                                if (bookVeeBtn) {
+                                    bookVeeBtn.classList.add('hidden');
+                                }
+                                // Optionally update the text to indicate payment is complete
+                                const bookVeeContainer = document.getElementById('bookVeeContainer');
+                                if (bookVeeContainer) {
+                                    // Use a default value if nominal is not available
+                                    const amount = response.data && response.data.nominal ? response.data.nominal : 500000;
+                                    const formattedAmount = new Intl.NumberFormat('id-ID').format(amount);
+                                    bookVeeContainer.innerHTML = `<span>Booking Vee Rp${formattedAmount} (Sudah Dibayar)</span>`;
+                                }
+                            }
                         }
                     }
                 } catch (error) {
