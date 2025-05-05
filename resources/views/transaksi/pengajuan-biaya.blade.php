@@ -9,7 +9,7 @@
         <div id="regulerImageContainer" class="w-full mt-4"></div>
         <div class="flex w-full justify-between font-bold text-xs pb-2 py-4">
             <span>Total : </span>
-            <span>Rp4.300.000</span>
+            <span id="totalAmount">Rp4.300.000</span>
         </div>
         <button id="regulerPaymentBtn" class="mt-4 w-full h-10 bg-[#51C2FF] rounded-lg text-white cursor-pointer text-sm font-normal shadow-xl">
             Proses Pembayaran
@@ -82,6 +82,15 @@
                             if (regulerSection) regulerSection.classList.remove('hidden');
                             if (unggulanSection) unggulanSection.classList.add('hidden');
                             
+                            // Update total amount with nominal from API response
+                            if (response.data && response.data.nominal) {
+                                const totalAmount = document.getElementById('totalAmount');
+                                if (totalAmount) {
+                                    const formattedAmount = new Intl.NumberFormat('id-ID').format(response.data.nominal);
+                                    totalAmount.textContent = `Rp${formattedAmount}`;
+                                }
+                            }
+                            
                             // Display the image for reguler students
                             if (mediaResponse && mediaResponse.data && mediaResponse.data.length > 0) {
                                 const imageUrl = mediaResponse.data[0].url;
@@ -105,10 +114,12 @@
                             if (response.data) {
                                 const bookVeeText = document.getElementById('bookVeeText');
                                 if (bookVeeText) {
-                                    // Use a default value if nominal is not available
-                                    const amount = response.data.nominal ? response.data.nominal : 500000;
-                                    const formattedAmount = new Intl.NumberFormat('id-ID').format(amount);
-                                    bookVeeText.textContent = `Booking Vee Rp${formattedAmount}`;
+                                    if (response.data.nominal) {
+                                        const formattedAmount = new Intl.NumberFormat('id-ID').format(response.data.nominal);
+                                        bookVeeText.textContent = `Booking Vee Rp${formattedAmount}`;
+                                    } else {
+                                        bookVeeText.textContent = `Booking Vee Sudah Dibayar`;
+                                    }
                                 }
                             }
                             
@@ -122,10 +133,12 @@
                                 // Optionally update the text to indicate payment is complete
                                 const bookVeeContainer = document.getElementById('bookVeeContainer');
                                 if (bookVeeContainer) {
-                                    // Use a default value if nominal is not available
-                                    const amount = response.data && response.data.nominal ? response.data.nominal : 500000;
-                                    const formattedAmount = new Intl.NumberFormat('id-ID').format(amount);
-                                    bookVeeContainer.innerHTML = `<span>Booking Vee Rp${formattedAmount} (Sudah Dibayar)</span>`;
+                                    if (response.data && response.data.nominal) {
+                                        const formattedAmount = new Intl.NumberFormat('id-ID').format(response.data.nominal);
+                                        bookVeeContainer.innerHTML = `<span>Booking Vee Rp${formattedAmount} (Sudah Dibayar)</span>`;
+                                    } else {
+                                        bookVeeContainer.innerHTML = `<span>Booking Vee Sudah Dibayar</span>`;
+                                    }
                                 }
                             }
                         }
@@ -138,12 +151,13 @@
             // Set up event listeners for payment buttons
             const regulerPaymentBtn = document.getElementById('regulerPaymentBtn');
             if (regulerPaymentBtn) {
+                
                 regulerPaymentBtn.addEventListener('click', async function() {
                     try {
                         const response = await AwaitFetchApi('user/pengajuan-biaya/reguler', 'PUT');
                         if (response && response.meta && response.meta.code === 200) {
                             showNotification('Pembayaran reguler berhasil diproses');
-                            window.location.reload();
+                            window.location.href = "/home";
                         } else {
                             showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses pembayaran');
                         }
@@ -191,7 +205,7 @@
                         
                         if (sppResponse && sppResponse.meta.code === 200) {
                             showNotification('Pembayaran unggulan berhasil diproses');
-                            window.location.reload();
+                            window.location.href = "/home";
                         } else {
                             showNotification(sppResponse?.meta?.message || 'Terjadi kesalahan saat memproses SPP/Infaq');
                         }
@@ -211,7 +225,7 @@
                         if (response && response.meta && response.meta.code === 200) {
                             if (response.data && response.data.qr_data) {
                                 // Show QR modal with the QR data
-                                showQRModal(response.data.qr_data, response.data.va_number);
+                                showQRModal(response.data.qr_data, response.data.va_number, true);
                             } else {
                                 showNotification('Booking Vee berhasil diproses');
                             }

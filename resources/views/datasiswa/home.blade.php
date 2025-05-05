@@ -376,7 +376,7 @@
                                     .then(response => {
                                         if (response && response.data) {
                                             const paymentData = response.data;
-                                            console.log("Payment data:", paymentData); // Debug log
+                                            print.log("Payment data:", paymentData); // Debug log
                                             
                                             // Get paid amount
                                             const amountPaid = paymentData.paid;
@@ -395,7 +395,7 @@
                                                 totalAmount = amountPaid;
                                             } else {
                                                 // If both paid and unpaid have value and they're different, only then add them
-                                                totalAmount = amountPaid + paymentData.unpaid;
+                                                totalAmount = paymentData.unpaid - amountPaid;
                                             }
 
                                             // Update payment progress UI
@@ -741,7 +741,7 @@
                                                             document.getElementById('payment-loading').classList.add('hidden');
                                                             document.getElementById('payment-form-container').classList.remove('hidden');
                                                             showError('Terjadi kesalahan saat mengambil data tagihan');
-                                                            console.error('Error fetching payment data:', error);
+                                                            print.error('Error fetching payment data:', error);
                                                         });
                                                 });
                                                 
@@ -759,7 +759,7 @@
                                             }
                                         })
                                         .catch(error => {
-                                            console.error('Error checking payment progress:', error);
+                                            print.error('Error checking payment progress:', error);
                                         });
                                 }
                             }
@@ -897,9 +897,11 @@
                                 // Close current modal
                                 paymentModal.classList.add('hidden');
                                 resetPaymentModal();
-                                
+                                const dataVa = {
+                                    va_number: response.data.va_number,
+                                };
                                 // Show QR/VA modal using the function from window object
-                                window.showPaymentModal(response.data);
+                                window.showPaymentModal(dataVa);
                             } else {
                                 // Just show success message if no QR/VA data
                                 paymentSuccess.classList.remove('hidden');
@@ -911,7 +913,7 @@
                         }
                     })
                     .catch(error => {
-                        console.error('Payment error:', error);
+                        print.error('Payment error:', error);
                     });
                 });
             }
