@@ -110,7 +110,8 @@
                 <label for="edit-jenjang" class="text-sm font-medium text-gray-700 mb-1">Jenjang</label>
                 <select id="edit-jenjang" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
                     <option value="SD">SD</option>
-                    <option value="SMP">SMP</option>
+                    <option value="SMP 1">SMP 1</option>
+                    <option value="SMP 2">SMP 2</option>
                     <option value="SMA">SMA</option>
                     <option value="SMK">SMK</option>
                 </select>
