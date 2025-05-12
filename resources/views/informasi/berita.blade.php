@@ -8,17 +8,27 @@
    <script>
       document.addEventListener('DOMContentLoaded', async () => {
          const container = document.getElementById('beritaContainer');
-
-         const res = await AwaitFetchApi('user/berita', 'GET', null);
-
          let imageUrls = [];
 
-         // Ambil gambar jika tersedia
-         if (res.meta?.code === 200 && Array.isArray(res.data?.data) && res.data.data.length > 0) {
-            imageUrls = res.data.data.map(item => item.url || item); // Ambil properti 'url' jika ada
+         // Cek apakah data sudah ada di cache dan masih valid
+         if (!isCacheExpired('cachedBerita', 'cachedBeritaTimestamp')) {
+            // Gunakan data dari cache
+            imageUrls = JSON.parse(localStorage.getItem('cachedBerita'));
          } else {
-            // Fallback
-            imageUrls = ['assets/img/berita.png'];
+            // Jika tidak ada di cache atau sudah expired, fetch langsung
+            const res = await AwaitFetchApi('user/berita', 'GET', null);
+
+            // Ambil gambar jika tersedia
+            if (res.meta?.code === 200 && Array.isArray(res.data?.data) && res.data.data.length > 0) {
+               imageUrls = res.data.data.map(item => item.url || item);
+            } else {
+               // Fallback
+               imageUrls = ['assets/img/berita.png'];
+            }
+
+            // Cache the data
+            localStorage.setItem('cachedBerita', JSON.stringify(imageUrls));
+            localStorage.setItem('cachedBeritaTimestamp', new Date().getTime().toString());
          }
 
          imageUrls.forEach(url => {

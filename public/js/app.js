@@ -201,3 +201,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+/**
+ * Helper function to check if cached data needs to be refreshed
+ * @param {string} cacheKey - The localStorage key for the cached data
+ * @param {string} timestampKey - The localStorage key for the timestamp
+ * @param {number} maxAge - Maximum age in milliseconds (default: 24 hours)
+ * @returns {boolean} - True if cache needs refresh, false if cache is valid
+ */
+function isCacheExpired(cacheKey, timestampKey, maxAge = 1 * 60 * 60 * 1000) {
+    const cachedData = localStorage.getItem(cacheKey);
+    const cachedTimestamp = localStorage.getItem(timestampKey);
+    const now = new Date().getTime();
+    
+    // Cache needs refresh if no data exists or has expired
+    return !cachedData || 
+           !cachedTimestamp || 
+           (now - parseInt(cachedTimestamp) >= maxAge);
+}
+

@@ -35,7 +35,10 @@
             Wakaf Perorangan
             <input type="number" id="wakafInput"
                 class="w-full h-12 pl-3 pr-4 border rounded-lg font-normal focus:outline-none placeholder:text-sm placeholder:font-normal"
-                placeholder="Masukkan Nominal">
+                placeholder="Masukkan Nominal" 
+                min="0" 
+                onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             <div class="font-thin text-justify text-[#757575] flex flex-col gap-2 text-xs py-2 pb-2">
                 <div>Wakaf perorang merupakan wakaf periodik, jika nominal yang dimasukkan kurang dari nominal yang
                     dianjurkan
@@ -50,7 +53,10 @@
             Bulanan (SPP/Infaq)
             <input type="number" id="sppInput"
                 class="w-full h-12 pl-3 pr-4 border rounded-lg font-normal focus:outline-none placeholder:text-sm placeholder:font-normal"
-                placeholder="Masukkan Nominal">
+                placeholder="Masukkan Nominal"
+                min="0" 
+                onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
         </div>
         <button id="unggulanPaymentBtn" class="w-full h-10 mt-4 bg-[#51C2FF] rounded-lg text-white cursor-pointer text-sm font-normal shadow-xl">
             Proses Pembayaran
@@ -66,6 +72,9 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ini untuk menghapus book vee container sementara
+            const bookVeeContainer = document.getElementById('bookVeeContainer');
+            bookVeeContainer.classList.add('hidden')
             async function fetchPengajuanBiaya() {
                 try {
                     const response = await AwaitFetchApi('user/pengajuan-biaya', 'GET');
@@ -154,16 +163,46 @@
                 
                 regulerPaymentBtn.addEventListener('click', async function() {
                     try {
-                        const response = await AwaitFetchApi('user/pengajuan-biaya/reguler', 'PUT');
-                        if (response && response.meta && response.meta.code === 200) {
-                            showNotification('Pembayaran reguler berhasil diproses');
-                            window.location.href = "/home";
-                        } else {
-                            showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses pembayaran');
+                        // Fetch student data first
+                        const studentRes = await AwaitFetchApi('user/peserta', 'GET', null);
+                        if (!studentRes || !studentRes.data) {
+                            showNotification('Gagal memuat data siswa', 'error');
+                            return;
                         }
+                        
+                        const student = studentRes.data;
+                        
+                        // Show confirmation dialog with student data
+                        Swal.fire({
+                            title: 'Konfirmasi Pembayaran',
+                            html: `
+                                <div class="text-left">
+                                    <p class="mb-2"><strong>Nama:</strong> ${student.nama || '-'}</p>
+                                    <p class="mb-2"><strong>NISN:</strong> ${student.nisn || '-'}</p>
+                                    <p class="mb-2"><strong>Jenjang:</strong> ${student.jenjang_sekolah || '-'}</p>
+                                    <p class="mb-2"><strong>Jurusan:</strong> ${student.jurusan1?.jurusan || '-'}</p>
+                                </div>
+                            `,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#51C2FF',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, Proses Pembayaran',
+                            cancelButtonText: 'Batal'
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                const response = await AwaitFetchApi('user/pengajuan-biaya/reguler', 'PUT');
+                                if (response && response.meta && response.meta.code === 200) {
+                                    showNotification('Pembayaran reguler berhasil diproses');
+                                    window.location.href = "/home";
+                                } else {
+                                    showNotification(response?.meta?.message || 'Terjadi kesalahan saat memproses pembayaran');
+                                }
+                            }
+                        });
                     } catch (error) {
                         print.error('Error processing reguler payment:', error);
-                        showNotification('Terjadi kesalahan saat memproses pembayaran');
+                        showNotification('Terjadi kesalahan saat memproses pembayaran', 'error');
                     }
                 });
             }
@@ -176,48 +215,88 @@
                         const sppInput = document.getElementById('sppInput');
                         
                         if (!wakafInput || !wakafInput.value) {
-                            showNotification('Mohon isi nominal wakaf');
+                            showNotification('Mohon isi nominal wakaf', 'error');
                             return;
                         }
                         
                         if (!sppInput || !sppInput.value) {
-                            showNotification('Mohon isi nominal SPP/Infaq');
+                            showNotification('Mohon isi nominal SPP/Infaq', 'error');
                             return;
                         }
                         
                         const wakafNominal = wakafInput.value;
                         const sppNominal = sppInput.value;
                         
-                        // Process wakaf payment
-                        const wakafResponse = await AwaitFetchApi('user/pengajuan-biaya/wakaf', 'PUT', {
-                            wakaf: parseInt(wakafNominal)
-                        });
-                        
-                        if (!wakafResponse || wakafResponse.meta.code !== 200) {
-                            showNotification(wakafResponse?.meta?.message || 'Terjadi kesalahan saat memproses wakaf');
+                        // Fetch student data
+                        const studentRes = await AwaitFetchApi('user/peserta', 'GET', null);
+                        if (!studentRes || !studentRes.data) {
+                            showNotification('Gagal memuat data siswa', 'error');
                             return;
                         }
                         
-                        // Process SPP payment
-                        const sppResponse = await AwaitFetchApi('user/pengajuan-biaya/spp', 'PUT', {
-                            spp: parseInt(sppNominal)
-                        });
+                        const student = studentRes.data;
+                        const totalNominal = parseInt(wakafNominal) + parseInt(sppNominal);
                         
-                        if (sppResponse && sppResponse.meta.code === 200) {
-                            showNotification('Pembayaran unggulan berhasil diproses');
-                            window.location.href = "/home";
-                        } else {
-                            showNotification(sppResponse?.meta?.message || 'Terjadi kesalahan saat memproses SPP/Infaq');
-                        }
+                        // Format numbers for display
+                        const formattedWakaf = new Intl.NumberFormat('id-ID').format(wakafNominal);
+                        const formattedSpp = new Intl.NumberFormat('id-ID').format(sppNominal);
+                        const formattedTotal = new Intl.NumberFormat('id-ID').format(totalNominal);
+                        
+                        // Show confirmation dialog with student data
+                        Swal.fire({
+                            title: 'Konfirmasi Pembayaran',
+                            html: `
+                                <div class="text-left">
+                                    <p class="mb-2"><strong>Nama:</strong> ${student.nama || '-'}</p>
+                                    <p class="mb-2"><strong>NISN:</strong> ${student.nisn || '-'}</p>
+                                    <p class="mb-2"><strong>Jenjang:</strong> ${student.jenjang_sekolah || '-'}</p>
+                                    <p class="mb-2"><strong>Jurusan:</strong> ${student.jurusan1?.jurusan || '-'}</p>
+                                    <hr class="my-2">
+                                    <p class="mb-2"><strong>Wakaf:</strong> Rp${formattedWakaf}</p>
+                                    <p class="mb-2"><strong>SPP/Infaq:</strong> Rp${formattedSpp}</p>
+                                </div>
+                            `,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#51C2FF',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, Proses Pembayaran',
+                            cancelButtonText: 'Batal'
+                        }).then(async (result) => {
+                            if (result.isConfirmed) {
+                                // Process wakaf payment
+                                const wakafResponse = await AwaitFetchApi('user/pengajuan-biaya/wakaf', 'PUT', {
+                                    wakaf: parseInt(wakafNominal)
+                                });
+                                
+                                if (!wakafResponse || wakafResponse.meta.code !== 200) {
+                                    showNotification(wakafResponse?.meta?.message || 'Terjadi kesalahan saat memproses wakaf', 'error');
+                                    return;
+                                }
+                                
+                                // Process SPP payment
+                                const sppResponse = await AwaitFetchApi('user/pengajuan-biaya/spp', 'PUT', {
+                                    spp: parseInt(sppNominal)
+                                });
+                                
+                                if (sppResponse && sppResponse.meta.code === 200) {
+                                    showNotification('Pembayaran unggulan berhasil diproses');
+                                    window.location.href = "/home";
+                                } else {
+                                    showNotification(sppResponse?.meta?.message || 'Terjadi kesalahan saat memproses SPP/Infaq', 'error');
+                                }
+                            }
+                        });
                     } catch (error) {
                         print.error('Error processing unggulan payment:', error);
-                        showNotification('Terjadi kesalahan saat memproses pembayaran');
+                        showNotification('Terjadi kesalahan saat memproses pembayaran', 'error');
                     }
                 });
             }
             
             const bookVeeBtn = document.getElementById('bookVeeBtn');
             if (bookVeeBtn) {
+                bookVeeBtn.classList.add('hidden');
                 bookVeeBtn.addEventListener('click', async function() {
                     try {
                         const response = await AwaitFetchApi('user/pengajuan-biaya/book-vee', 'PUT');

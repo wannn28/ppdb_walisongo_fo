@@ -78,7 +78,7 @@
             <span class="text-[10px] font-semibold">Isi Form</span>
         </div>
 
-        <img src="{{ asset('assets/svg/Line-done.svg') }}" alt="Line" class="self-center" id="line1">
+        <img src="{{ asset('assets/svg/Line-done.svg') }}" alt="Line" class="self-center -mt-8" id="line1">
 
         <!-- Langkah 2: Unggah Berkas -->
         <div class="flex flex-col items-center gap-1 text-center" id="step-unggah-berkas">
@@ -86,7 +86,7 @@
             <span class="text-[10px] font-semibold">Unggah Berkas</span>
         </div>
 
-        <img src="{{ asset('assets/svg/Line-undone.svg') }}" alt="Line" class="self-center" id="line2">
+        <img src="{{ asset('assets/svg/Line-undone.svg') }}" alt="Line" class="self-center -mt-8" id="line2">
 
         <!-- Langkah 3: Pengajuan Biaya -->
         <div class="flex flex-col items-center gap-1 text-center" id="step-pengajuan-biaya">
@@ -244,6 +244,71 @@
             // Fungsi untuk format angka ke format Rupiah
             function formatRupiah(angka) {
                 return new Intl.NumberFormat('id-ID').format(angka);
+            }
+
+            // Fungsi untuk fetch data jadwal dan berita sekali saja
+            async function fetchAndCacheJadwal() {
+                try {
+                    // Check if cached data exists and is not expired (24 hours)
+                    if (!isCacheExpired('cachedJadwal', 'cachedJadwalTimestamp')) {
+                        return JSON.parse(localStorage.getItem('cachedJadwal'));
+                    }
+                    
+                    // Fetch fresh data
+                    const res = await AwaitFetchApi('user/media/jadwal', 'GET', null);
+                    
+                    let imageUrls = [];
+                    
+                    if (res.meta?.code === 200) {
+                        if (Array.isArray(res.data) && res.data.length > 0) {
+                            imageUrls = res.data.map(item => item.url);
+                        }
+                    } else {
+                        imageUrls = ['assets/img/jadwal.png'];
+                    }
+                    
+                    if (imageUrls.length === 0) {
+                        imageUrls = ['assets/img/jadwal.png'];
+                    }
+                    
+                    // Cache the data
+                    localStorage.setItem('cachedJadwal', JSON.stringify(imageUrls));
+                    localStorage.setItem('cachedJadwalTimestamp', new Date().getTime().toString());
+                    
+                    return imageUrls;
+                } catch (error) {
+                    print.error('Error fetching jadwal:', error);
+                    return ['assets/img/jadwal.png'];
+                }
+            }
+            
+            async function fetchAndCacheBerita() {
+                try {
+                    // Check if cached data exists and is not expired (24 hours)
+                    if (!isCacheExpired('cachedBerita', 'cachedBeritaTimestamp')) {
+                        return JSON.parse(localStorage.getItem('cachedBerita'));
+                    }
+                    
+                    // Fetch fresh data
+                    const res = await AwaitFetchApi('user/berita', 'GET', null);
+                    
+                    let imageUrls = [];
+                    
+                    if (res.meta?.code === 200 && Array.isArray(res.data?.data) && res.data.data.length > 0) {
+                        imageUrls = res.data.data.map(item => item.url || item);
+                    } else {
+                        imageUrls = ['assets/img/berita.png'];
+                    }
+                    
+                    // Cache the data
+                    localStorage.setItem('cachedBerita', JSON.stringify(imageUrls));
+                    localStorage.setItem('cachedBeritaTimestamp', new Date().getTime().toString());
+                    
+                    return imageUrls;
+                } catch (error) {
+                    print.error('Error fetching berita:', error);
+                    return ['assets/img/berita.png'];
+                }
             }
 
             // Panggil API untuk mendapatkan data peserta dan progress
@@ -801,6 +866,10 @@
                 .catch((error) => {
                     print.error('Error fetching peserta:', error);
                 });
+
+            // Prefetch jadwal and berita data for caching
+            fetchAndCacheJadwal();
+            fetchAndCacheBerita();
 
             // Payment Modal Functionality
             const paymentModal = document.getElementById('payment-modal');

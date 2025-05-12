@@ -175,11 +175,11 @@ function showQRModal(data, vaNumber = null, onlyVa = null) {
                     </button>
                     <div id="vaStepsContent" class="hidden mt-2">
                         <ol class="list-decimal list-inside text-sm text-gray-700 space-y-1">
-                            <li>Catat atau salin nomor Virtual Account di atas.</li>
-                            <li>Buka aplikasi mobile banking yang Anda gunakan.</li>
-                            <li>Pilih menu transfer atau pembayaran, lalu pilih Virtual Account.</li>
-                            <li>Masukkan nomor Virtual Account yang telah disalin.</li>
-                            <li>Ikuti instruksi selanjutnya untuk menyelesaikan pembayaran.</li>
+                            <li>Lakukan pembayaran melalui Transfer Antar Bank.</li>
+                            <li>Pilih bank tujuan BANK MUAMALAT INDONESIA.</li>
+                            <li>Masukkan Nomor Rekening berupa Nomor Virtual Account yang muncul di atas.</li>
+                            <li>Masukkan nominal sesuai jumlah pembayaran yang harus dilakukan.</li>
+                            <li>Klik Kirim atau Lanjutkan Pembayaran.</li>
                             <li>Periksa status pembayaran Anda pada halaman ini setelah transaksi selesai.</li>
                         </ol>
                     </div>

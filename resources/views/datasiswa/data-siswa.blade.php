@@ -176,6 +176,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const pesertaRes = await AwaitFetchApi('user/peserta', 'GET', null);
             const data = pesertaRes.data;
+            console.log('Fetch result:', pesertaRes);
 
             const assignText = (id, value) => document.getElementById(id).textContent = value ?? '';
 
@@ -199,6 +200,24 @@
             header.classList.add('font-medium', 'mt-4');
             header.innerText = 'Berkas Siswa';
             container.appendChild(header);
+            
+            // Disable edit button based on status
+            const editBtn = document.getElementById('edit-btn');
+            const status = data.status ? data.status.toLowerCase() : '';
+            
+            if (status === 'diproses' || status === 'diterima') {
+                editBtn.classList.add('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+                editBtn.disabled = true;
+                editBtn.title = `Data tidak dapat diedit karena status: ${status}`;
+                
+                // Create status indicator
+                const statusIndicator = document.createElement('div');
+                statusIndicator.className = 'fixed bottom-32 right-4 text-xs bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-2 rounded shadow-lg z-50';
+                statusIndicator.innerHTML = `
+                    <p class="font-bold">Status: ${status.charAt(0).toUpperCase() + status.slice(1)}</p>
+                `;
+                document.body.appendChild(statusIndicator);
+            }
 
             (data.berkas ?? []).forEach(berkas => {
                 const wrapper = document.createElement('div');
@@ -247,10 +266,27 @@
 
                         const input = document.createElement('input');
                         input.type = 'file';
-                        input.accept = 'image/*,application/pdf';
+                        input.accept = 'image/png,image/jpeg,image/jpg,application/pdf';
                         input.className = 'text-xs flex-1';
                         input.style.maxWidth = '180px';
                         input.dataset.ketentuanId = ketentuanId;
+                        
+                        // Add file format and size info
+                        const fileInfo = document.createElement('div');
+                        fileInfo.className = 'text-gray-500 text-[9px] mb-1';
+                        fileInfo.textContent = 'Format: PNG, JPG, JPEG, PDF. Maks: 2MB';
+                        
+                        // Add file size validation
+                        input.addEventListener('change', function(e) {
+                            const fileSize = e.target.files[0]?.size || 0;
+                            const maxSize = 2 * 1024 * 1024; // 2MB
+                            
+                            if (fileSize > maxSize) {
+                                showNotification("Ukuran file melebihi 2MB. Silakan pilih file yang lebih kecil.", "error");
+                                // Reset input
+                                this.value = '';
+                            }
+                        });
                         
                         const saveBtn = document.createElement('button');
                         saveBtn.innerHTML = `
@@ -308,6 +344,15 @@
         });
 
         document.getElementById('edit-btn').addEventListener('click', async () => {
+            // Check status before allowing edit
+            const pesertaRes = await AwaitFetchApi('user/peserta', 'GET', null);
+            const status = pesertaRes.data.status?.toLowerCase();
+            
+            if (status === 'diproses' || status === 'diterima') {
+                showNotification(`Data tidak dapat diedit karena status ${status}`, 'error');
+                return;
+            }
+            
             document.getElementById('info-display').classList.add('hidden');
             document.getElementById('edit-form').classList.remove('hidden');
             
