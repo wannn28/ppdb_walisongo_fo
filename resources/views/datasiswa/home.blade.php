@@ -137,7 +137,7 @@
     <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
         <div class="bg-white rounded-lg p-6 w-11/12 max-w-md">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Lanjutkan Pembayaran</h3>
+                <h3 class="text-lg font-semibold text-gray-900">Lakukan Pembayaran</h3>
                 <button id="close-payment-modal" class="text-gray-500 hover:text-gray-700">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -600,9 +600,9 @@
 
                                 // Link: Pembayaran
                                 document.getElementById('link-unggah').setAttribute('href', '#');
-                                document.getElementById('text-link-utama').innerText = 'Lanjutkan Pembayaran';
+                                document.getElementById('text-link-utama').innerText = 'Lakukan Pembayaran';
                                 document.getElementById('img-link').src = '{{ asset('assets/svg/Upload To FTP.svg') }}';
-                                document.getElementById('text-link-1').innerText = 'Lanjutkan Pembayaran';
+                                document.getElementById('text-link-1').innerText = 'Lakukan Pembayaran';
                                 document.getElementById('text-link-2').innerText = 'Selesaikan Proses Pembayaran Anda';
                                 
                                 // Check if status is "diproses", hide payment link and show notification
@@ -620,7 +620,7 @@
                                             </svg>
                                             <p class="font-bold">Menunggu persetujuan admin</p>
                                         </div>
-                                        <p class="ml-6">Mohon tunggu konfirmasi dari admin untuk melanjutkan pembayaran.</p>
+                                        <p class="ml-6">Mohon tunggu konfirmasi dari admin untuk melakukan pembayaran.</p>
                                     `;
                                     
                                     // Insert warning after the link-unggah element

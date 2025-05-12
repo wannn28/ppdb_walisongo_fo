@@ -10,7 +10,10 @@
 
         <div class="text-xs">
             Nomor HP
-            <input type="tel" pattern="[0-9]*" inputmode="numeric" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none" id="no_telp" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <div class="flex items-center border rounded-lg overflow-hidden">
+                <div class="bg-gray-100 px-2 py-1 text-gray-700">+62</div>
+                <input type="tel" pattern="[0-9]*" inputmode="numeric" class="w-full h-8 pl-2 pr-4 focus:outline-none" id="no_telp" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            </div>
         </div>
 
         <div class="text-xs">
@@ -46,6 +49,13 @@
             // showQRModal('https://payment-link.com');
             const daftarBtn = document.getElementById('btn-daftar');
             const phoneInput = document.getElementById('no_telp');
+            
+            // Format phone number to remove leading zero
+            phoneInput.addEventListener('input', function() {
+                if (this.value.startsWith('0')) {
+                    this.value = this.value.substring(1);
+                }
+            });
             
             // Additional input validation for phone number
             phoneInput.addEventListener('keypress', function(e) {
@@ -87,14 +97,14 @@
                 }
                 
                 // Validate phone number format
-                if (no_telp.length < 10 || no_telp.length > 13) {
-                    showNotification("Nomor HP harus antara 10-13 digit!", "error");
+                if (no_telp.length < 8 || no_telp.length > 11) {
+                    showNotification("Nomor HP harus antara 8-11 digit!", "error");
                     return;
                 }
 
                 const data = {
                     nama,
-                    no_telp,
+                    no_telp: `62${no_telp}`, // Remove the + and just use 62 prefix
                     jenis_kelamin,
                     jenjang_sekolah
                 };

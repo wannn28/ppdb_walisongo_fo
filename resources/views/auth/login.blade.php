@@ -4,7 +4,10 @@
     <div class="text-2xl flex w-full justify-center text-[#048FBD] font-bold">Login</div>
     <div class="text-xs">
         Nomor HP
-        <input id="phoneInput" type="tel" pattern="[0-9]*" inputmode="numeric" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        <div class="flex items-center border rounded-lg overflow-hidden">
+            <div class="bg-gray-100 px-2 py-1 text-gray-700">+62</div>
+            <input id="phoneInput" type="tel" pattern="[0-9]*" inputmode="numeric" class="w-full h-8 pl-2 pr-4 focus:outline-none" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+        </div>
     </div>
     <button id="loginBtn" class="w-full h-10 bg-[#51C2FF] rounded-lg text-white cursor-pointer">Login</button>
     <div class="flex text-xs justify-center">
@@ -17,6 +20,13 @@
     document.addEventListener('DOMContentLoaded', () => {
         const loginBtn = document.getElementById('loginBtn');
         const phoneInput = document.getElementById('phoneInput');
+
+        // Format phone number to remove leading zero
+        phoneInput.addEventListener('input', function() {
+            if (this.value.startsWith('0')) {
+                this.value = this.value.substring(1);
+            }
+        });
 
         // Kosongkan token saat membuka halaman login
         localStorage.setItem('token', '');
@@ -50,7 +60,7 @@
                 return;
             }
 
-            const response = await buttonAPI('auth/login', 'POST', { no_telp }, true, loginBtn, 'Masuk...');
+            const response = await buttonAPI('auth/login', 'POST', { no_telp: `62${no_telp}` }, true, loginBtn, 'Masuk...');
             if (response && response.meta?.code === 200) {
                 if (response.data.token && response.data.token !== '') {
                     showNotification("Login Berhasil!", "success");         
