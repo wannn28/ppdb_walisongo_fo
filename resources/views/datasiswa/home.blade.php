@@ -43,21 +43,24 @@
 
     <!-- Konten lainnya tetap sama -->
     <div class="flex w-full max-w-sm justify-center">
-        <div class="grid grid-cols-4 py-4 gap-8">
+        <div id="navbar-grid" class="grid grid-cols-3 py-4 gap-8">
             <a id="data-siswa-link" href="#"
-                class="text-center @if (request()->routeIs('data-siswa')) text-ppdb-green @else text-gray-500 @endif">
+                class="text-center @if (request()->routeIs('data-siswa')) text-ppdb-green @else  @endif">
                 <div class="flex flex-col items-center">
                     <img src="{{ asset('assets/svg/Icon Data Siswa.svg') }}" alt="data siswa">
+                    <span id="data-siswa-text" class="text-xs mt-1">Data Siswa</span>
                 </div>
             </a>
-            <a href="{{ route('peringkat') }}" class="text-center text-gray-500">
+            <a id="peringkat-link" href="{{ route('peringkat') }}" class="text-center  hidden">
                 <div class="flex flex-col items-center">
                     <img src="{{ asset('assets/svg/Icon Peringkat.svg') }}" alt="Jadwal">
+                       <span id="peringkat-text" class="text-xs mt-1">Peringkat</span>
                 </div>
             </a>
-            <a href="{{ route('riwayat') }}" class="text-center text-gray-500">
+            <a href="{{ route('riwayat') }}" class="text-center ">
                 <div class="flex flex-col items-center">
                     <img src="{{ asset('assets/svg/Icon Riwayat.svg') }}" alt="Berita">
+                    <span id="riwayat-text" class="text-xs mt-1">Riwayat</span>
                 </div>
             </a>
             <a href="{{ route('pesan') }}" class="text-center relative">
@@ -65,6 +68,7 @@
                     <span id="navbar-unread-count"
                         class="absolute -top-2 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold z-10 hidden"></span>
                     <img src="{{ asset('assets/svg/Icon Pesan.svg') }}" alt="Account">
+                    <span id="pesan-text" class="text-xs mt-1">Pesan</span>
                 </div>
             </a>
         </div>
@@ -349,6 +353,19 @@
                         const progressStepsContainer = document.getElementById('progress-steps-container');
                         const paymentProgressContainer = document.getElementById('payment-progress-container');
 
+                        // Check jurusan type for peringkat text
+                        const isReguler = peserta.jurusan1 && peserta.jurusan1.jurusan === "reguler";
+                        const peringkatText = document.getElementById('peringkat-text');
+                        if (peringkatText) {
+                            peringkatText.innerText = isReguler ? "Peserta" : "Peringkat";
+                        }
+                        
+                        // Update link destination based on jurusan type
+                        const peringkatLink = document.getElementById('peringkat-link');
+                        if (peringkatLink) {
+                            peringkatLink.href = isReguler ? "{{ route('daftar-peserta') }}" : "{{ route('peringkat') }}";
+                        }
+
                         if (res.data.progressUser) {
                             // Jika sudah ada progress, aktifkan link data siswa
                             dataSiswaLink.href = "{{ route('data-siswa') }}";
@@ -390,6 +407,10 @@
                                     '{{ asset('assets/svg/Terms and Conditions.svg') }}';
                                 document.getElementById('text-link-1').innerText = 'Isi Form';
                                 document.getElementById('text-link-2').innerText = 'Lengkapi Data Pendaftaran';
+                                
+                                // Hide peringkat link
+                                document.getElementById('peringkat-link').classList.add('hidden');
+                                
                             } else if (progress === "1") {
                                 // Tampilkan container progress steps
                                 progressStepsContainer.classList.remove('hidden');
@@ -410,6 +431,9 @@
                                 document.getElementById('text-link-1').innerText = 'Unggah Berkas';
                                 document.getElementById('text-link-2').innerText =
                                     'Upload Dokumen Pendukung';
+                                    
+                                // Hide peringkat link
+                                document.getElementById('peringkat-link').classList.add('hidden');
 
                             } else if (progress === "2") {
                                 // Tampilkan container progress steps
@@ -430,11 +454,21 @@
                                     '{{ asset('assets/svg/Upload To FTP.svg') }}';
                                 document.getElementById('text-link-1').innerText = 'Pengajuan Biaya';
                                 document.getElementById('text-link-2').innerText = 'Ajukan Pembiayaan Anda';
+                                
+                                // Hide peringkat link
+                                document.getElementById('peringkat-link').classList.add('hidden');
 
                             } else if (progress === "3") {
                                 // Sembunyikan container progress steps dan tampilkan payment progress
                                 progressStepsContainer.classList.add('hidden');
                                 paymentProgressContainer.classList.remove('hidden');
+                                
+                                // Show peringkat link when progress is 3
+                                document.getElementById('peringkat-link').classList.remove('hidden');
+
+                                // Change grid to 4 columns when progress is 3
+                                document.getElementById('navbar-grid').classList.remove('grid-cols-3');
+                                document.getElementById('navbar-grid').classList.add('grid-cols-4');
 
                                 // Fetch payment progress data from API
                                 AwaitFetchApi('user/progressPayment', 'GET', null)
@@ -453,16 +487,16 @@
                                             
                                             // The API response shows paid and unpaid are the same amount and progress is 100%
                                             // This means the total should be just the paid amount (not paid+unpaid)
-                                            if (percentage === 100 && paymentData.paid === paymentData.unpaid) {
-                                                totalAmount = amountPaid; // Total is the same as the paid amount
-                                            } else if (paymentData.unpaid === 0) {
-                                                // If unpaid is 0, total is just the paid amount
-                                                totalAmount = amountPaid;
-                                            } else {
-                                                // If both paid and unpaid have value and they're different, only then add them
-                                                totalAmount = paymentData.unpaid - amountPaid;
-                                            }
-
+                                            // if (percentage === 100 && paymentData.paid === paymentData.unpaid) {
+                                            //     totalAmount = amountPaid; // Total is the same as the paid amount
+                                            // } else if (paymentData.unpaid === 0) {
+                                            //     // If unpaid is 0, total is just the paid amount
+                                            //     totalAmount = amountPaid;
+                                            // } else {
+                                            //     // If both paid and unpaid have value and they're different, only then add them
+                                            //     totalAmount = paymentData.unpaid - amountPaid;
+                                            // }
+                                            totalAmount = paymentData.unpaid;
                                             // Update payment progress UI
                                             document.getElementById('payment-percentage').innerText = `${percentage}%`;
                                             document.getElementById('payment-progress-bar').style.width = `${percentage}%`;
@@ -860,6 +894,9 @@
                                 '{{ asset('assets/svg/Terms and Conditions.svg') }}';
                             document.getElementById('text-link-1').innerText = 'Isi Form';
                             document.getElementById('text-link-2').innerText = 'Lengkapi Data Pendaftaran';
+                            
+                            // Hide peringkat link
+                            document.getElementById('peringkat-link').classList.add('hidden');
                         }
                     }
                 })

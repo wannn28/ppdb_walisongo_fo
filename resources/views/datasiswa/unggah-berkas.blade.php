@@ -29,7 +29,7 @@
             const container = document.getElementById('uploadFields');
             const res = await AwaitFetchApi('user/berkas', 'GET', null);
             
-            console.log('Fetch result:', res);
+
 
             if (res.meta?.code === 200 && Array.isArray(res.data)) {
                 res.data.forEach(item => {

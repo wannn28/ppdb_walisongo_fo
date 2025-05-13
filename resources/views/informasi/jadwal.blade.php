@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="container mx-auto my-4">
+   <h1 class="text-2xl font-bold mb-4">Jadwal</h1>
+</div>
    <div id="jadwalContainer" class="space-y-4">
       <!-- Gambar-gambar akan ditampilkan di sini -->
    </div>
@@ -17,8 +20,6 @@
          } else {
             // Jika tidak ada di cache atau sudah expired, fetch langsung
             const res = await AwaitFetchApi('user/media/jadwal', 'GET', null);
-
-            console.log('API Response:', res); // Log untuk debugging
 
             // Ambil gambar jika tersedia
             if (res.meta?.code === 200) {
