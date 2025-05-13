@@ -46,6 +46,9 @@ Route::get('/peringkat', function () {
     return view('datasiswa.peringkat');
 })->name('peringkat');
 
+Route::get('/daftar-peserta', function () {
+    return view('datasiswa.daftarpeserta');
+})->name('daftar-peserta');
 
 Route::get('/pesan', function () {
     return view('komunikasi.pesan');

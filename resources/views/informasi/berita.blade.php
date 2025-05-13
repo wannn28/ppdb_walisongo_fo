@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+   <div class="container mx-auto my-4">
+      <h1 class="text-2xl font-bold mb-4">Berita</h1>
+   </div>
    <div id="beritaContainer" class="space-y-4">
       <!-- Gambar-gambar akan ditampilkan di sini -->
    </div>

@@ -1,4 +1,3 @@
-
 <nav class="container-bottom-navigation fixed bottom-0 w-full max-w-sm bg-white">
     <div class="grid grid-cols-4 gap-4 py-4">
         <!-- Home -->
@@ -38,15 +37,47 @@
         </a>
 
 
-        <a href="{{ route('akun') }}"
-            class="text-center @if (request()->routeIs('akun')) text-ppdb-green @else text-gray-500 @endif">
+        <a href="javascript:void(0)" 
+            id="logout-button"
+            class="text-center text-gray-500">
             <div class="flex flex-col items-center">
-                @if (request()->routeIs('akun'))
-                    <img src="{{ asset('assets/svg/nav-account-actived.svg') }}" alt="Account">
-                @else
-                    <img src="{{ asset('assets/svg/nav-account.svg') }}" alt="Account">
-                @endif
+                <img src="{{ asset('assets/svg/nav-logout.svg') }}" alt="Logout">
+                {{-- <span class="text-xs mt-1">Logout</span> --}}
             </div>
         </a>
     </div>
 </nav>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutButton = document.getElementById('logout-button');
+        
+        if (logoutButton) {
+            logoutButton.addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin keluar?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Keluar',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Clear localStorage
+                        localStorage.removeItem('token');
+                        
+                        // Show success notification
+                        showNotification('Berhasil logout', 'success');
+                        
+                        // Redirect to login page after a short delay
+                        setTimeout(function() {
+                            window.location.href = '/login';
+                        }, 1000);
+                    }
+                });
+            });
+        }
+    });
+</script>
