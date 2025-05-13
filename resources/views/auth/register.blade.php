@@ -95,12 +95,7 @@
                     showNotification("Nomor HP wajib diisi!", "error");
                     return;
                 }
-                
-                // Validate phone number format
-                if (no_telp.length < 8 || no_telp.length > 11) {
-                    showNotification("Nomor HP harus antara 8-11 digit!", "error");
-                    return;
-                }
+            
 
                 const data = {
                     nama,
