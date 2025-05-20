@@ -32,7 +32,7 @@
                 class="w-24 flex justify-center text-xs bg-[#51C2FF] text-white p-2 rounded-lg shadow-lg">Booking</button>
         </div>
         <div class="mt-4 flex flex-col">
-            Wakaf Perorangan
+            Jariah Perorangan
             <input type="number" id="wakafInput"
                 class="w-full h-12 pl-3 pr-4 border rounded-lg font-normal focus:outline-none placeholder:text-sm placeholder:font-normal"
                 placeholder="Masukkan Nominal" 
@@ -40,15 +40,15 @@
                 onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
                 oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             <div class="font-thin text-justify text-[#757575] flex flex-col gap-2 text-xs py-2 pb-2">
-                <div>Wakaf perorang merupakan wakaf periodik, jika nominal yang dimasukkan kurang dari nominal yang
+                <div>Jariah perorang merupakan jariah periodik, jika nominal yang dimasukkan kurang dari nominal yang
                     dianjurkan
                     maka
-                    akan dinyatakan wakaf permanent melalui uang.</div>
+                    akan dinyatakan jariah permanent melalui uang.</div>
 
-                <div><span class="font-bold">Wakaf Periodik</span> adalah wakaf yang akan dikembalikan 100% setelah
+                <div><span class="font-bold">Jariah Periodik</span> adalah jariah yang akan dikembalikan 100% setelah
                     kelulusan/3
                     tahun.</div>
-                <div><span class="font-bold">Wakaf Permanent</span> adalah wakaf yang tidak bisa dikembalikan</div>
+                <div><span class="font-bold">Jariah Permanent</span> adalah jariah yang tidak bisa dikembalikan</div>
             </div>
             Bulanan (SPP/Infaq)
             <input type="number" id="sppInput"
