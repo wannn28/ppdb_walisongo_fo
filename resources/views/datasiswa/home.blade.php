@@ -26,7 +26,7 @@
         <div class="text-xs px-4 pb-2 font-normal">
             <div class="flex justify-between">
                 <span id="jenis_kelamin">Jenis Kelamin : </span>
-                <span id="status">Status : </span>
+                <span id="status">Verifikasi Berkas : </span>
             </div>
         </div>
         <div id="jenjang_sekolah" class="bg-transparent text-white text-sm font-bold px-4 pb-4 pt-2">
@@ -328,7 +328,7 @@
                         document.getElementById('jenis_kelamin').innerText =
                             `Jenis Kelamin : ${peserta.jenis_kelamin}`;
                         document.getElementById('status').innerText =
-                            `Status : ${peserta.status ? peserta.status.charAt(0).toUpperCase() + peserta.status.slice(1) : '-'}`;
+                            `Verifikasi Berkas : ${peserta.status ? peserta.status.charAt(0).toUpperCase() + peserta.status.slice(1) : '-'}`;
                         document.getElementById('jenjang_sekolah').innerText =
                             `${peserta.jenjang_sekolah} WALISONGO SEMARANG`;
 

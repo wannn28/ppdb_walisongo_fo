@@ -9,6 +9,11 @@
             <input id="nisn" type="text"
                 class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight" placeholder="Masukkan NISN">
         </div>
+        <div class="text-xs">
+            Asal Sekolah
+            <input id="asal_sekolah" type="text"
+                class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight" placeholder="Masukkan Asal Sekolah">
+        </div>
         <div class="text-xs grid grid-cols-2 gap-4">
             <div>
                 Tempat Lahir
@@ -196,7 +201,8 @@
                     tempat_lahir: document.getElementById('tempat_lahir').value,
                     tanggal_lahir: document.getElementById('tanggal_lahir').value,
                     alamat: document.getElementById('alamat').value,
-                    jurusan1_id: parseInt(document.getElementById('jurusan1').value)
+                    jurusan1_id: parseInt(document.getElementById('jurusan1').value),
+                    asal_sekolah: document.getElementById('asal_sekolah').value
                 };
 
                 const payloadOrtu = {

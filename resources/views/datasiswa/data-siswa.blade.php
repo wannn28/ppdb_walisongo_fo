@@ -11,6 +11,11 @@
             <span>NISN</span>
             <span class="font-light text-xs" id="nisn"></span>
         </div>
+        <!-- Asal Sekolah -->
+        <div class="text-sm font-medium flex flex-col pl-2 pr-2 pb-2 border-b border-gray-400">
+            <span>Asal Sekolah</span>
+            <span class="font-light text-xs" id="asal-sekolah"></span>
+        </div>
         <div class="text-sm font-medium flex flex-col pl-2 pr-2 pb-2 border-b border-gray-400">
             <span>Nama</span>
             <span class="font-light text-xs" id="nama"></span>
@@ -82,6 +87,10 @@
             <div class="flex flex-col">
                 <label for="edit-nisn" class="text-sm font-medium text-gray-700 mb-1">NISN</label>
                 <input id="edit-nisn" type="text" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+            </div>
+            <div class="flex flex-col">
+                <label for="edit-asal-sekolah" class="text-sm font-medium text-gray-700 mb-1">Asal Sekolah</label>
+                <input id="edit-asal-sekolah" type="text" class="border rounded p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
             </div>
             <div class="flex flex-col">
                 <label for="edit-nama" class="text-sm font-medium text-gray-700 mb-1">Nama</label>
@@ -180,6 +189,7 @@
             const assignText = (id, value) => document.getElementById(id).textContent = value ?? '';
 
             assignText('nisn', data.nisn);
+            assignText('asal-sekolah', data.asal_sekolah);
             assignText('nama', data.nama);
             assignText('tempat-tanggal-lahir', `${data.tempat_lahir ?? ''}, ${data.tanggal_lahir ?? ''}`);
             assignText('no-telp', data.no_telp);
@@ -385,6 +395,7 @@
             
             // Populate basic form fields
             document.getElementById('edit-nisn').value = getText('nisn');
+            document.getElementById('edit-asal-sekolah').value = getText('asal-sekolah');
             document.getElementById('edit-nama').value = getText('nama');
             const [tempat, tanggal] = getText('tempat-tanggal-lahir').split(', ');
             document.getElementById('edit-tempat-lahir').value = tempat || '';
@@ -531,6 +542,7 @@
                 jenjang_sekolah: document.getElementById('edit-jenjang').value,
                 jurusan1_id: parseInt(document.getElementById('edit-kelas').value) || null,
                 alamat: document.getElementById('edit-alamat').value,
+                asal_sekolah: document.getElementById('edit-asal-sekolah').value,
             };
 
             const ortuData = {
