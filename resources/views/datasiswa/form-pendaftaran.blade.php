@@ -229,7 +229,7 @@
                     }
 
                     showNotification("Formulir berhasil dikirim!", "success");
-                    // window.location.href = '/data-siswa';
+                    window.location.href = '/data-siswa';
                 } catch (error) {
                     print.error('Error:', error);
                     showNotification(
