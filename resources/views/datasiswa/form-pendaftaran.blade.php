@@ -61,12 +61,12 @@
                 class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight"
                 placeholder="Masukkan Nama Ibu">
         </div>
-        <div class="text-xs">
+        {{-- <div class="text-xs">
             No Telp
             <input id="no_telp" type="text"
                 class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight"
                 placeholder="Masukkan No Telp Orang Tua">
-        </div>
+        </div> --}}
         <div class="text-xs">
             Pekerjaan Ayah
             <select id="pekerjaan_ayah_id" class="w-full h-8 pl-3 pr-4 border rounded-lg focus:outline-none font-extralight">
@@ -208,7 +208,7 @@
                 const payloadOrtu = {
                     nama_ayah: document.getElementById('nama_ayah').value,
                     nama_ibu: document.getElementById('nama_ibu').value,
-                    no_telp: document.getElementById('no_telp').value,
+                    // no_telp: document.getElementById('no_telp').value,
                     pekerjaan_ayah_id: parseInt(document.getElementById('pekerjaan_ayah_id').value),
                     pekerjaan_ibu_id: parseInt(document.getElementById('pekerjaan_ibu_id').value),
                     penghasilan_ortu_id: parseInt(document.getElementById('penghasilan_ortu_id').value)
