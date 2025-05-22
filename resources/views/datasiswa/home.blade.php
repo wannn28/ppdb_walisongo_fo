@@ -12,14 +12,14 @@
     <div class="rounded-xl overflow-hidden text-white font-sans"
         style="background-image: url('{{ asset('assets/svg/background_card_name.svg') }}'); background-size: cover; background-position: center;">
         <div class="flex p-4">
-            <div class="w-1/3">
+            <div class="w-1/4">
                 <img id="profile-img" class="w-full rounded-md" src="{{ asset('assets/img/profile_default.png') }}"
                     alt="Profile">
             </div>
             <div class="flex flex-col justify-center w-3/3 pl-2">
                 <!-- Elemen untuk diupdate dengan data peserta -->
                 <p id="nama" class="font-semibold text-sm"></p>
-                <p id="nisn" class="text-xs"></p>
+                <p id="nis" class="text-xs"></p>
                 <p id="role" class="font-bold text-xs"></p>
             </div>
         </div>
@@ -323,7 +323,7 @@
                         // Update data peserta
                         const peserta = res.data.peserta;
                         document.getElementById('nama').innerText = peserta.nama;
-                        document.getElementById('nisn').innerText = peserta.nisn ?? 'NISN BELUM DIISI';
+                        document.getElementById('nis').innerText = peserta.nis ?? 'NIS';
                         document.getElementById('role').innerText = "Siswa";
                         document.getElementById('jenis_kelamin').innerText =
                             `Jenis Kelamin : ${peserta.jenis_kelamin}`;
