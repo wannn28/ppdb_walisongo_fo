@@ -11,6 +11,10 @@
             <span>NISN</span>
             <span class="font-light text-xs" id="nisn"></span>
         </div>
+        <div class="text-sm font-medium flex flex-col pl-2 pr-2 pb-2 border-b border-gray-400">
+            <span>No Telepon</span>
+            <span class="font-light text-xs" id="no_telp_siswa"></span>
+        </div>
         <!-- Asal Sekolah -->
         <div class="text-sm font-medium flex flex-col pl-2 pr-2 pb-2 border-b border-gray-400">
             <span>Asal Sekolah</span>
@@ -205,14 +209,17 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const pesertaRes = await AwaitFetchApi('user/peserta', 'GET', null);
             const data = pesertaRes.data;
-
+            const cekBerkas = data.berkas;
+            const berkas = await AwaitFetchApi('user/berkas', 'GET', null);
+            print.log(berkas)
             const assignText = (id, value) => document.getElementById(id).textContent = value ?? '';
 
             assignText('nisn', data.nisn);
+            assignText('no_telp_siswa', data.no_telp);
             assignText('asal-sekolah', data.asal_sekolah);
             assignText('nama', data.nama);
             assignText('tempat-tanggal-lahir', `${data.tempat_lahir ?? ''}, ${data.tanggal_lahir ?? ''}`);
-            
+
             assignText('jenis_kelamin', data.jenis_kelamin);
             assignText('jenjang', data.jenjang_sekolah);
             assignText('kelas', data.jurusan1?.jurusan);
@@ -226,10 +233,6 @@
             assignText('pekerjaan-ibu', data.biodata_ortu?.pekerjaan_ibu?.pekerjaan);
 
             const container = document.getElementById('info-display');
-            const header = document.createElement('div');
-            header.classList.add('font-medium', 'mt-4');
-            header.innerText = 'Berkas Siswa';
-            container.appendChild(header);
 
             // Disable edit button based on status
             const editBtn = document.getElementById('edit-btn');
@@ -250,34 +253,146 @@
                 document.body.appendChild(statusIndicator);
             }
 
-            (data.berkas ?? []).forEach(berkas => {
+            // Only show berkas section if data.berkas is not empty
+            if (cekBerkas && cekBerkas.length > 0) {
+                // Add berkas header
+                const header = document.createElement('div');
+                header.classList.add('font-medium', 'mt-4');
+                header.innerText = 'Berkas Siswa';
+                container.appendChild(header);
+                
+                // Create a map of existing uploaded berkas
+                const uploadedBerkasMap = new Map();
+                (data.berkas ?? []).forEach(berkas => {
+                    uploadedBerkasMap.set(berkas.ketentuan_berkas_id, berkas);
+                });
+                
+                // Get all required berkas from the API
+                const berkasRequirements = berkas.data || [];
+                
+                // Display all berkas (both uploaded and required but not yet uploaded)
+                berkasRequirements.forEach(ketentuanBerkas => {
+                const uploadedBerkas = uploadedBerkasMap.get(ketentuanBerkas.id);
                 const wrapper = document.createElement('div');
-                wrapper.className =
-                    'text-sm font-medium pl-2 pr-2 pb-3 pt-2 border-b border-gray-400 flex flex-col';
-                const label = berkas.nama_file.replace(/_/g, ' ');
+                wrapper.className = 'text-sm font-medium pl-2 pr-2 pb-3 pt-2 border-b border-gray-400 flex flex-col';
+                const label = ketentuanBerkas.nama.replace(/_/g, ' ');
+                
+                if (uploadedBerkas) {
+                    // If berkas is already uploaded, show it
+                    const extension = uploadedBerkas.url_file.split('.').pop() || 'png';
+                    const fileIcon = extension === 'pdf' ?
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>' :
+                        '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" /></svg>';
 
-                const extension = berkas.url_file.split('.').pop() || 'png';
-                const fileIcon = extension === 'pdf' ?
-                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>' :
-                    '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" /></svg>';
-
-                wrapper.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <span class="capitalize">${label}</span>
-                        <button class="edit-btn text-gray-600 hover:text-blue-500 transition-colors" data-id="${berkas.id}" data-ketentuan-id="${berkas.ketentuan_berkas_id ?? ''}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    wrapper.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span class="capitalize">${label}</span>
+                            <button class="edit-btn text-gray-600 hover:text-blue-500 transition-colors" data-id="${uploadedBerkas.id}" data-ketentuan-id="${uploadedBerkas.ketentuan_berkas_id ?? ''}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="font-light text-xs mt-1 flex items-center">
+                            ${fileIcon}
+                            <a href="${uploadedBerkas.url_file}" target="_blank" class="hover:text-blue-500 transition-colors flex-1 truncate">${label}.${extension}</a>
+                        </div>
+                        <div class="file-upload-container mt-2 hidden"></div>
+                    `;
+                } else {
+                    // If berkas is not uploaded yet, show upload option
+                    const isRequired = ketentuanBerkas.is_required === 1;
+                    wrapper.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span class="capitalize">${label} ${isRequired ? '<span class="text-red-500">*</span>' : '<span class="text-gray-400 text-[10px]">(Opsional)</span>'}</span>
+                        </div>
+                        <div class="font-light text-xs mt-1 flex items-center text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
                             </svg>
-                        </button>
-                    </div>
-                    <div class="font-light text-xs mt-1 flex items-center">
-                        ${fileIcon}
-                        <a href="${berkas.url_file}" target="_blank" class="hover:text-blue-500 transition-colors flex-1 truncate">${label}.${extension}</a>
-                    </div>
-                    <div class="file-upload-container mt-2 hidden"></div>
-                `;
+                            <span>Belum diunggah</span>
+                        </div>
+                        <div class="file-upload-container mt-2">
+                            <div class="text-gray-500 text-[9px] mb-1">Format: PNG, JPG, JPEG, PDF. Maks: 2MB</div>
+                            <div class="flex flex-col md:flex-row gap-2">
+                                <input type="file" id="file_${ketentuanBerkas.id}" class="hidden upload-file" 
+                                    data-ketentuan-id="${ketentuanBerkas.id}" accept=".png,.jpg,.jpeg,.pdf">
+                                <label for="file_${ketentuanBerkas.id}" 
+                                    class="text-white bg-[#51C2FF] px-3 py-1 rounded text-xs cursor-pointer inline-block text-center">
+                                    Pilih File
+                                </label>
+                                <span class="file-name text-xs text-gray-400">Tidak ada file yang dipilih</span>
+                                <button class="upload-btn bg-green-500 text-white px-3 py-1 rounded text-xs hidden">
+                                    Unggah
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
                 container.appendChild(wrapper);
             });
+
+            // Handler for file input changes (for berkas that haven't been uploaded yet)
+            document.querySelectorAll('.upload-file').forEach(input => {
+                input.addEventListener('change', function(e) {
+                    const fileSize = e.target.files[0]?.size || 0;
+                    const maxSize = 2 * 1024 * 1024; // 2MB
+                    const fileNameElement = this.closest('.flex-col, .flex-row').querySelector('.file-name');
+                    const uploadBtn = this.closest('.flex-col, .flex-row').querySelector('.upload-btn');
+                    
+                    if (fileSize > maxSize) {
+                        showNotification("Ukuran file melebihi 2MB. Silakan pilih file yang lebih kecil.", "error");
+                        this.value = '';
+                        fileNameElement.textContent = 'Tidak ada file yang dipilih';
+                        uploadBtn.classList.add('hidden');
+                    } else if (e.target.files[0]) {
+                        fileNameElement.textContent = e.target.files[0].name;
+                        uploadBtn.classList.remove('hidden');
+                    } else {
+                        fileNameElement.textContent = 'Tidak ada file yang dipilih';
+                        uploadBtn.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Handler for upload buttons (for berkas that haven't been uploaded yet)
+            document.querySelectorAll('.upload-btn').forEach(button => {
+                button.addEventListener('click', async function() {
+                    const fileInput = this.closest('.flex-col, .flex-row').querySelector('.upload-file');
+                    const file = fileInput.files[0];
+                    const ketentuanId = fileInput.dataset.ketentuanId;
+                    
+                    if (!file) {
+                        return showNotification('Pilih file terlebih dahulu.', 'error');
+                    }
+                    
+                    const formData = new FormData();
+                    formData.append('files[0]', file);
+                    formData.append('ketentuan_berkas_ids[0]', ketentuanId);
+                    
+                    // Show loading state
+                    const originalText = this.textContent;
+                    this.innerHTML = `<svg class="animate-spin h-4 w-4 text-white mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>`;
+                    this.disabled = true;
+                    // Debug FormData contents
+                    for (let pair of formData.entries()) {
+                        console.log(pair[0] + ': ' + pair[1]);
+                    }
+                    const res = await AwaitFetchApi('user/berkas/upload', 'POST', formData);
+                    if (res.meta?.code === 200) {
+                        showNotification('Berkas berhasil diunggah.', 'success');
+                        location.reload();
+                    } else {
+                        showNotification('Gagal mengunggah berkas.', 'error');
+                        this.textContent = originalText;
+                        this.disabled = false;
+                    }
+                });
+            });
+            } // End of cekBerkas check
 
             document.querySelectorAll('.edit-btn').forEach(button => {
                 button.addEventListener('click', function() {
@@ -388,7 +503,10 @@
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>`;
                                 saveBtn.disabled = true;
-
+                                // Debug FormData contents
+                                for (let pair of formData.entries()) {
+                                    console.log(pair[0] + ': ' + pair[1]);
+                                }
                                 const res = await AwaitFetchApi(
                                     `user/berkas/${id}`, 'POST', formData);
                                 res.meta?.code === 200 ? location.reload() :
@@ -589,7 +707,7 @@
                 const responseForm = await AwaitFetchApi('user/peserta', 'PUT', siswaData);
 
                 if (responseForm.meta?.code !== 200) {
-                    showNotification("Gagal memperbarui data siswa. Silakan coba lagi.", "error");
+                    // showNotification("Gagal memperbarui data siswa. Silakan coba lagi.", "error");
                     return;
                 }
 
@@ -603,13 +721,12 @@
                 if (responseOrtu.meta?.code >= 200 && responseOrtu.meta?.code < 300) {
                     showNotification("Data berhasil diperbarui", "success");
                     location.reload();
-                } else {
-                    showNotification("Gagal memperbarui data orang tua. Silakan coba lagi.", "error");
                 }
             } catch (error) {
                 console.error('Error updating data:', error);
                 showNotification("Terjadi kesalahan saat memperbarui data.", "error");
             }
         });
+        
     </script>
 @endsection
