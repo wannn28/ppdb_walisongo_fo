@@ -67,7 +67,10 @@
                     if (result.isConfirmed) {
                         // Clear localStorage
                         localStorage.removeItem('token');
-                        
+                        localStorage.removeItem('cachedBerita');
+                        localStorage.removeItem('cachedBeritaTimestamp');
+                        localStorage.removeItem('cachedJadwal');
+                        localStorage.removeItem('cachedJadwalTimestamp');
                         // Show success notification
                         showNotification('Berhasil logout', 'success');
                         
