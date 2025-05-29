@@ -1006,7 +1006,7 @@
                                     va_number: response.data.va_number,
                                 };
                                 // Show QR/VA modal using the function from window object
-                                window.showPaymentModal(dataVa);
+                                window.showPaymentModal(response.data);
                             } else {
                                 // Just show success message if no QR/VA data
                                 paymentSuccess.classList.remove('hidden');

@@ -70,7 +70,7 @@ function closeModal() {
 let qrData = '';
 let vaNumberData = '';
 
-function showQRModal(data, vaNumber = null, onlyVa = null) {
+function showQRModal(data, vaNumber = null, onlyVa = null, nominalVa = null) {
     print.log(data);
     qrData = data; // Simpan qr_data untuk digunakan saat cek status
     
@@ -98,6 +98,12 @@ function showQRModal(data, vaNumber = null, onlyVa = null) {
     <div class="bg-white p-4 rounded-xl shadow-2xl max-w-md w-full mx-4 my-auto">
         <div class="text-center space-y-4">
             <h2 class="text-xl font-bold text-gray-800">Pembayaran</h2>`;
+            
+    // Display nominal at the top if available
+    if (nominalVa) {
+        modalContent += `
+            <p class="text-gray-800 font-bold text-lg">Total: Rp ${new Intl.NumberFormat('id-ID').format(nominalVa)}</p>`;
+    }
 
     // Tambahkan tab jika memiliki kedua metode pembayaran dan bukan hanya VA
     if (vaNumber && !onlyVa) {
@@ -123,6 +129,7 @@ function showQRModal(data, vaNumber = null, onlyVa = null) {
                 <div class="p-2 bg-gray-50 rounded-lg">
                     <canvas id="qrCanvas" class="mx-auto"></canvas>
                 </div>
+                ${nominalVa ? `<p class="text-gray-800 font-bold text-lg mt-2">Rp ${new Intl.NumberFormat('id-ID').format(nominalVa)}</p>` : ''}
                 <button onclick="downloadQRCode()" 
                     class="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -308,18 +315,19 @@ function showPaymentModal(data) {
     if (typeof data === 'object') {
         const qrData = data.qr_data || null;
         const vaNumber = data.va_number || null;
+        const nominal = data.nominal || null;
         
         // Jika hanya memiliki VA tanpa QRIS
         if (vaNumber && !qrData) {
-            showQRModal(null, vaNumber, true);
+            showQRModal(null, vaNumber, true, nominal);
         } 
         // Jika memiliki keduanya (QRIS dan VA)
         else if (qrData && vaNumber) {
-            showQRModal(qrData, vaNumber, false);
+            showQRModal(qrData, vaNumber, false, nominal);
         }
         // Jika hanya memiliki QRIS tanpa VA
         else if (qrData && !vaNumber) {
-            showQRModal(qrData);
+            showQRModal(qrData, null, null, nominal);
         }
         else {
             showNotification('Data pembayaran tidak valid', 'error');
