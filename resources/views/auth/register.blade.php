@@ -29,9 +29,9 @@
             <select id="jenjang_sekolah" class="w-full h-8 pl-2 pr-4 border rounded-lg focus:outline-none">
                 <option value="SMA">SMA</option>
                 <option value="SMK">SMK</option>
-                <option value="SMP 1">SMP 1</option>
-                <option value="SMP 2">SMP 2</option>
-                <option value="SD">SD</option>
+                <option value="SMP">SMP</option>
+                {{-- <option value="SMP 2">SMP 2</option> --}}
+                {{-- <option value="SD">SD</option> --}}
             </select>
         </div>
 
