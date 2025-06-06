@@ -137,6 +137,103 @@
         </div>
     </a>
 
+    <!-- Help Icon Button -->
+    <div class="fixed bottom-20 right-4 z-40">
+        <button id="help-button" class="bg-white text-blue-500 p-3 rounded-full shadow-lg hover:bg-blue-500 hover:text-white transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Registration Guide Modal -->
+    <div id="registration-guide-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 w-11/12 max-w-md max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800">Panduan Pendaftaran PPDB</h3>
+                <button id="close-guide-modal" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-ppdb-green">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-semibold text-gray-800">Login / Daftar Akun</h3>
+                        <p class="text-sm text-gray-600">Login menggunakan akun yang sudah terdaftar. Jika belum memiliki akun, silahkan daftar terlebih dahulu.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-ppdb-green">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-semibold text-gray-800">Isi Form Pendaftaran</h3>
+                        <p class="text-sm text-gray-600">Lengkapi data pendaftaran dengan informasi yang valid dan lengkap.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-ppdb-green">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-semibold text-gray-800">Unggah Berkas Pendaftaran</h3>
+                        <p class="text-sm text-gray-600">Upload dokumen-dokumen pendukung yang diperlukan untuk pendaftaran.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-ppdb-green">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-semibold text-gray-800">Pengajuan Biaya</h3>
+                        <p class="text-sm text-gray-600">Ajukan pembiayaan sesuai dengan kemampuan Anda.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-ppdb-green">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-semibold text-gray-800">Verifikasi Berkas</h3>
+                        <p class="text-sm text-gray-600">Tunggu hingga berkas Anda selesai diverifikasi oleh admin.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center text-ppdb-green">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="font-semibold text-gray-800">Pembayaran</h3>
+                        <p class="text-sm text-gray-600">Lakukan pembayaran sesuai dengan nominal yang telah ditentukan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Payment Modal -->
     <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
         <div class="bg-white rounded-lg p-6 w-11/12 max-w-md">
@@ -861,6 +958,12 @@
                                         });
                                 }
                             }
+
+                            // Update Pengajuan Biaya description based on program type
+                            const pengajuanBiayaDesc = document.getElementById('pengajuan-biaya-description');
+                            if (pengajuanBiayaDesc && isReguler) {
+                                pengajuanBiayaDesc.innerText = 'Step ini tidak berlaku untuk program reguler.';
+                            }
                         } else {
                             // Tampilkan container progress steps
                             progressStepsContainer.classList.remove('hidden');
@@ -1036,6 +1139,28 @@
                 if (paymentSuccess) paymentSuccess.classList.add('hidden');
                 if (paymentError) paymentError.classList.add('hidden');
             }
+
+            // Registration Guide Modal Functionality
+            const helpButton = document.getElementById('help-button');
+            const registrationGuideModal = document.getElementById('registration-guide-modal');
+            const closeGuideModal = document.getElementById('close-guide-modal');
+
+            // Show modal when help button is clicked
+            helpButton.addEventListener('click', function() {
+                registrationGuideModal.classList.remove('hidden');
+            });
+
+            // Close modal when close button is clicked
+            closeGuideModal.addEventListener('click', function() {
+                registrationGuideModal.classList.add('hidden');
+            });
+
+            // Close modal when clicking outside
+            registrationGuideModal.addEventListener('click', function(e) {
+                if (e.target === registrationGuideModal) {
+                    registrationGuideModal.classList.add('hidden');
+                }
+            });
         });
     </script>
 @endpush
